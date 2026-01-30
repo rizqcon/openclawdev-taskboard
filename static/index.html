@@ -1028,23 +1028,132 @@
             background: var(--text-muted);
             border-color: var(--text-muted);
         }
-        .action-item-delete {
+        .action-item-actions {
+            display: flex;
+            gap: 0.25rem;
             opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .action-item:hover .action-item-actions {
+            opacity: 1;
+        }
+        .action-item-archive,
+        .action-item-delete {
             background: none;
             border: none;
-            color: var(--critical);
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             padding: 2px 6px;
             border-radius: 4px;
             transition: all 0.15s;
         }
-        .action-item:hover .action-item-delete {
-            opacity: 0.6;
+        .action-item-archive {
+            color: var(--text-muted);
+        }
+        .action-item-archive:hover {
+            color: var(--accent);
+            background: rgba(0, 180, 216, 0.15);
+        }
+        .action-item-delete {
+            color: var(--critical);
         }
         .action-item-delete:hover {
-            opacity: 1 !important;
             background: rgba(239, 68, 68, 0.15);
+        }
+        
+        /* Action Items Section Header */
+        .action-items-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+        }
+        .action-items-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-items-header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-items-collapse-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        .action-items-collapse-btn:hover {
+            color: var(--text);
+            background: var(--bg-dark);
+        }
+        .action-items-archive-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        .action-items-archive-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .action-items-archive-toggle.active {
+            background: rgba(0, 180, 216, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* Collapsible section */
+        .action-items-content {
+            transition: max-height 0.2s ease-out, opacity 0.2s ease-out;
+            overflow: hidden;
+        }
+        .action-items-content.collapsed {
+            max-height: 0 !important;
+            opacity: 0;
+            margin: 0;
+        }
+        
+        /* Archive viewer */
+        .archive-viewer {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border);
+        }
+        .archive-viewer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .archive-viewer .action-item {
+            opacity: 0.6;
+            font-size: 0.85em;
+        }
+        .action-item-unarchive {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        .action-item-unarchive:hover {
+            background: rgba(0, 180, 216, 0.15);
         }
         
         /* AI Working Indicator - Compact Icon Edition */
@@ -1098,6 +1207,23 @@
         .card:has(.ai-working) {
             border-color: rgba(139, 92, 246, 0.4);
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+        }
+        
+        /* Chat working indicator in task modal */
+        .chat-working-indicator {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 12px;
+            animation: ai-glow 2s ease-in-out infinite;
+        }
+        
+        .chat-working-indicator .typing-dot {
+            width: 5px;
+            height: 5px;
+            margin-right: 2px;
         }
         
         /* Modal - Normal Mode */
@@ -1716,7 +1842,7 @@
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
                         <button class="stop-btn" id="stopSessionBtn" onclick="event.stopPropagation(); stopCurrentSession()" title="Stop this session">■</button>
-                        <button class="command-expand-btn" onclick="event.stopPropagation(); toggleCommandFullsize()" title="Expand" id="commandExpandBtn">↗</button>
+                        <button class="command-expand-btn" onclick="event.stopPropagation(); toggleCommandFullsize()" title="Fullscreen" id="commandExpandBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><polyline points="21 3 14 10"/><polyline points="3 21 10 14"/></svg></button>
                         <button class="command-close-btn" onclick="event.stopPropagation(); collapseCommandBar()">×</button>
                     </div>
                 </div>
@@ -1981,11 +2107,26 @@
                     
                     <!-- Action Items Section -->
                     <div id="actionItemsSection" style="margin-top: 1rem; display: none;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span style="font-weight: 600; color: var(--text-primary);">Action Items</span>
-                            <span id="actionItemsCount" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                        <div class="action-items-header">
+                            <div class="action-items-header-left">
+                                <button class="action-items-collapse-btn" id="actionItemsCollapseBtn" onclick="toggleActionItemsCollapse()" title="Collapse/expand">▼</button>
+                                <span style="font-weight: 600; color: var(--text-primary);">Action Items</span>
+                                <span id="actionItemsCount" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                            </div>
+                            <div class="action-items-header-right">
+                                <button class="action-items-archive-toggle" id="archiveToggleBtn" onclick="toggleArchiveView()" title="View archived items">📦 Archive</button>
+                            </div>
                         </div>
-                        <div id="actionItemsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                        <div class="action-items-content" id="actionItemsContent">
+                            <div id="actionItemsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                            <div id="archiveViewer" class="archive-viewer" style="display: none;">
+                                <div class="archive-viewer-header">
+                                    <span>📦 Archived Items</span>
+                                    <span id="archiveCount"></span>
+                                </div>
+                                <div id="archivedItemsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -1994,6 +2135,12 @@
                     <div class="chat-header">
                         <span>Conversation</span>
                         <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <div class="chat-working-indicator" id="chatWorkingIndicator" style="display: none;">
+                                <span class="typing-dot"></span>
+                                <span class="typing-dot"></span>
+                                <span class="typing-dot"></span>
+                                <span id="chatWorkingText" style="margin-left: 0.25rem; font-size: 0.75rem; color: var(--accent);">thinking...</span>
+                            </div>
                             <button class="stop-btn-mini" id="stopAgentBtn" onclick="stopTaskAgent()" title="Stop agent">■</button>
                             <button class="btn btn-secondary" onclick="toggleTaskDetails()" id="toggleDetailsBtn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Hide Details</button>
                         </div>
@@ -2033,7 +2180,7 @@
         let detailsVisible = true;
         
         // Agent icons mapping (main agent added dynamically from config)
-        const AGENT_ICONS = {
+        window.AGENT_ICONS = {
             'Architect': '🏛️',
             'Security Auditor': '🔒',
             'Code Reviewer': '📋',
@@ -2043,7 +2190,7 @@
         };
         
         function getAgentIcon(agent) {
-            return AGENT_ICONS[agent] || '○';
+            return window.AGENT_ICONS[agent] || '○';
         }
         
         // Timezone-aware date/time formatting (uses browser's detected timezone)
@@ -2118,9 +2265,14 @@
                 sessionSelector.options[0].textContent = `${mainAgent} (Main)`;
             }
             
-            // Update AGENT_ICONS with main agent
+            // Update AGENT_ICONS with main agent (used by cards and legend)
             if (window.AGENT_ICONS) {
                 AGENT_ICONS[mainAgent] = mainEmoji;
+            }
+            
+            // Update AGENT_ICONS_MAP with main agent (used by mention dropdown)
+            if (window.AGENT_ICONS_MAP) {
+                AGENT_ICONS_MAP[mainAgent] = mainEmoji;
             }
             
             // Store branding globally for use elsewhere
@@ -2323,6 +2475,13 @@
             const stopAgentBtn = document.getElementById('stopAgentBtn');
             stopAgentBtn.title = task.working_agent ? `Stop ${task.working_agent}` : 'Stop agent';
             
+            // Show working indicator if agent is currently working
+            if (task.working_agent) {
+                showChatWorkingIndicator(task.working_agent);
+            } else {
+                hideChatWorkingIndicator();
+            }
+            
             await loadAndRenderComments(taskId);
             await loadAndRenderActionItems(taskId);
         }
@@ -2355,29 +2514,48 @@
                         <div class="chat-message-content">${formatMessageContent(c.content)}</div>
                     </div>
                 `).join('');
+                
+                // If the last comment is from an agent (not User), hide the typing indicator
+                const lastComment = taskComments[taskComments.length - 1];
+                if (lastComment && lastComment.agent !== 'User') {
+                    hideChatWorkingIndicator();
+                }
             }
             
             container.scrollTop = container.scrollHeight;
         }
         
+        let actionItemsCollapsed = false;
+        let archiveViewVisible = false;
+        
         async function loadAndRenderActionItems(taskId) {
-            // Load both open and resolved items
+            // Load open, resolved, and archived items
             const openItems = await fetch(`${API}/api/tasks/${taskId}/action-items`).then(r => r.json());
             const resolvedItems = await fetch(`${API}/api/tasks/${taskId}/action-items?resolved=true`).then(r => r.json());
-            const allItems = [...openItems, ...resolvedItems];
+            const archivedItems = await fetch(`${API}/api/tasks/${taskId}/action-items?archived=true`).then(r => r.json());
+            const allActiveItems = [...openItems, ...resolvedItems];
             actionItems[taskId] = openItems; // Keep only open items for bubble count
             
             const section = document.getElementById('actionItemsSection');
             const list = document.getElementById('actionItemsList');
             const countEl = document.getElementById('actionItemsCount');
+            const archiveViewer = document.getElementById('archiveViewer');
+            const archivedList = document.getElementById('archivedItemsList');
+            const archiveCount = document.getElementById('archiveCount');
+            const archiveToggleBtn = document.getElementById('archiveToggleBtn');
             
-            if (allItems.length === 0) {
+            // Determine if section should show (has active or archived items)
+            const hasItems = allActiveItems.length > 0 || archivedItems.length > 0;
+            
+            if (!hasItems) {
                 section.style.display = 'none';
             } else {
                 section.style.display = 'block';
                 const openCount = openItems.length;
-                countEl.textContent = openCount > 0 ? `${openCount} open` : 'all done';
-                list.innerHTML = allItems.map(item => `
+                countEl.textContent = openCount > 0 ? `${openCount} open` : (allActiveItems.length > 0 ? 'all done' : '');
+                
+                // Render active items (open + resolved)
+                list.innerHTML = allActiveItems.map(item => `
                     <div class="action-item type-${item.item_type} ${item.resolved ? 'resolved' : ''}" onclick="quoteActionItem(${item.id}, '${escapeHtml(item.content).replace(/'/g, "\\'")}')">
                         <div class="action-item-check" onclick="event.stopPropagation(); ${item.resolved ? '' : `resolveActionItem(${item.id})`}" title="${item.resolved ? 'Resolved' : 'Mark as resolved'}"></div>
                         <div style="flex: 1;">
@@ -2385,13 +2563,95 @@
                             <div class="action-item-meta">
                                 <span class="action-item-type ${item.item_type}">${item.item_type}</span>
                                 — ${item.agent} — ${formatDateTime(item.created_at)}
-                                ${item.resolved ? ' — ? resolved' : ''}
+                                ${item.resolved ? ' — ✓ resolved' : ''}
                             </div>
                         </div>
-                        <button class="action-item-delete" onclick="event.stopPropagation(); deleteActionItem(${item.id})" title="Delete">×</button>
+                        <div class="action-item-actions">
+                            ${item.resolved ? `<button class="action-item-archive" onclick="event.stopPropagation(); archiveActionItem(${item.id})" title="Archive">📦</button>` : ''}
+                            <button class="action-item-delete" onclick="event.stopPropagation(); deleteActionItem(${item.id})" title="Delete">×</button>
+                        </div>
                     </div>
                 `).join('');
+                
+                // Update archive toggle button
+                if (archivedItems.length > 0) {
+                    archiveToggleBtn.textContent = `📦 Archive (${archivedItems.length})`;
+                    archiveToggleBtn.style.display = 'block';
+                } else {
+                    archiveToggleBtn.textContent = '📦 Archive';
+                    archiveToggleBtn.style.display = allActiveItems.length > 0 ? 'block' : 'none';
+                }
+                
+                // Render archived items
+                if (archivedItems.length > 0) {
+                    archiveCount.textContent = `${archivedItems.length} item${archivedItems.length !== 1 ? 's' : ''}`;
+                    archivedList.innerHTML = archivedItems.map(item => `
+                        <div class="action-item type-${item.item_type} resolved">
+                            <div style="flex: 1;">
+                                <div class="action-item-content">${escapeHtml(item.content)}</div>
+                                <div class="action-item-meta">
+                                    <span class="action-item-type ${item.item_type}">${item.item_type}</span>
+                                    — ${item.agent} — ${formatDateTime(item.created_at)}
+                                </div>
+                            </div>
+                            <div class="action-item-actions" style="opacity: 1;">
+                                <button class="action-item-unarchive" onclick="event.stopPropagation(); unarchiveActionItem(${item.id})" title="Restore">↩</button>
+                                <button class="action-item-delete" onclick="event.stopPropagation(); deleteActionItem(${item.id})" title="Delete">×</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                // Show/hide archive viewer based on state
+                archiveViewer.style.display = archiveViewVisible && archivedItems.length > 0 ? 'block' : 'none';
             }
+        }
+        
+        function toggleActionItemsCollapse() {
+            actionItemsCollapsed = !actionItemsCollapsed;
+            const content = document.getElementById('actionItemsContent');
+            const btn = document.getElementById('actionItemsCollapseBtn');
+            
+            if (actionItemsCollapsed) {
+                content.classList.add('collapsed');
+                btn.textContent = '▶';
+                btn.title = 'Expand';
+            } else {
+                content.classList.remove('collapsed');
+                btn.textContent = '▼';
+                btn.title = 'Collapse';
+            }
+        }
+        
+        function toggleArchiveView() {
+            archiveViewVisible = !archiveViewVisible;
+            const archiveViewer = document.getElementById('archiveViewer');
+            const archiveToggleBtn = document.getElementById('archiveToggleBtn');
+            const archivedList = document.getElementById('archivedItemsList');
+            
+            if (archiveViewVisible && archivedList.innerHTML.trim()) {
+                archiveViewer.style.display = 'block';
+                archiveToggleBtn.classList.add('active');
+            } else {
+                archiveViewer.style.display = 'none';
+                archiveToggleBtn.classList.remove('active');
+            }
+        }
+        
+        async function archiveActionItem(itemId) {
+            await fetch(`${API}/api/action-items/${itemId}/archive`, { method: 'POST' });
+            const taskId = parseInt(document.getElementById('taskId').value);
+            await loadAndRenderActionItems(taskId);
+            await loadTasks();
+            renderBoard();
+        }
+        
+        async function unarchiveActionItem(itemId) {
+            await fetch(`${API}/api/action-items/${itemId}/unarchive`, { method: 'POST' });
+            const taskId = parseInt(document.getElementById('taskId').value);
+            await loadAndRenderActionItems(taskId);
+            await loadTasks();
+            renderBoard();
         }
         
         function quoteActionItem(itemId, content) {
@@ -2566,6 +2826,19 @@
                 content = content ? `${content}${fileHeader}${fileContent}` : `${fileHeader}${fileContent}`;
             }
             
+            // Get the assigned agent for this task
+            const task = tasks.find(t => t.id == taskId);
+            const assignedAgent = task ? task.agent : 'Agent';
+            
+            // Show typing indicator optimistically (agent is about to think)
+            showChatWorkingIndicator(assignedAgent);
+            
+            // Also trigger the card working animation via API (optimistic)
+            if (task && task.agent && task.agent !== 'User' && task.agent !== 'Unassigned') {
+                fetch(`${API}/api/tasks/${taskId}/start-work?agent=${encodeURIComponent(task.agent)}`, { method: 'POST' })
+                    .catch(() => {}); // Ignore errors, this is optimistic
+            }
+            
             await fetch(`${API}/api/tasks/${taskId}/comments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -2575,6 +2848,45 @@
             input.value = '';
             clearPastedImage();
             await loadAndRenderComments(taskId);
+        }
+        
+        let chatWorkingPollInterval = null;
+        
+        function showChatWorkingIndicator(agentName) {
+            const indicator = document.getElementById('chatWorkingIndicator');
+            const text = document.getElementById('chatWorkingText');
+            if (indicator && text) {
+                text.textContent = `${agentName || 'Agent'} thinking...`;
+                indicator.style.display = 'flex';
+            }
+            
+            // Start polling as fallback in case WebSocket event is missed
+            clearInterval(chatWorkingPollInterval);
+            const taskId = document.getElementById('taskId')?.value;
+            if (taskId) {
+                chatWorkingPollInterval = setInterval(async () => {
+                    try {
+                        const taskComments = await fetch(`${API}/api/tasks/${taskId}/comments`).then(r => r.json());
+                        const lastComment = taskComments[taskComments.length - 1];
+                        if (lastComment && lastComment.agent !== 'User') {
+                            // Agent has responded, hide indicator and stop polling
+                            hideChatWorkingIndicator();
+                        }
+                    } catch (e) {
+                        // Ignore poll errors
+                    }
+                }, 3000); // Poll every 3 seconds as fallback
+            }
+        }
+        
+        function hideChatWorkingIndicator() {
+            const indicator = document.getElementById('chatWorkingIndicator');
+            if (indicator) {
+                indicator.style.display = 'none';
+            }
+            // Stop fallback polling
+            clearInterval(chatWorkingPollInterval);
+            chatWorkingPollInterval = null;
         }
         
         function handleChatKeydown(event) {
@@ -2701,6 +3013,12 @@
                     const openTaskId = document.getElementById('taskId').value;
                     if (openTaskId && parseInt(openTaskId) === data.task_id) {
                         await loadAndRenderComments(data.task_id);
+                        // Always hide typing indicator when any comment arrives (agent responded)
+                        // Check both the comment object and just hide if it's not from User
+                        const agent = data.comment?.agent || '';
+                        if (agent !== 'User') {
+                            hideChatWorkingIndicator();
+                        }
                     }
                 }
                 
@@ -2714,10 +3032,26 @@
                     renderBoard();
                 }
                 
-                if (data.type === 'work_started' || data.type === 'work_stopped') {
-                    // Refresh board to show/hide AI working indicator
+                if (data.type === 'work_started') {
+                    // Refresh board to show AI working indicator on card
                     await loadTasks();
                     renderBoard();
+                    // Also show in modal if this task is open
+                    const openTaskId = document.getElementById('taskId').value;
+                    if (openTaskId && parseInt(openTaskId) === data.task_id && data.agent) {
+                        showChatWorkingIndicator(data.agent);
+                    }
+                }
+                
+                if (data.type === 'work_stopped') {
+                    // Refresh board to hide AI working indicator on card
+                    await loadTasks();
+                    renderBoard();
+                    // Also hide in modal if this task is open
+                    const openTaskId = document.getElementById('taskId').value;
+                    if (openTaskId && parseInt(openTaskId) === data.task_id) {
+                        hideChatWorkingIndicator();
+                    }
                 }
                 
                 if (data.type === 'session_deleted') {
@@ -3096,6 +3430,9 @@
                 // Also stop the work indicator
                 await fetch(`/api/tasks/${taskId}/stop-work`, { method: 'POST' });
                 
+                // Hide chat working indicator
+                hideChatWorkingIndicator();
+                
                 // Visual feedback
                 btn.style.background = 'var(--low)';
                 btn.style.borderColor = 'var(--low)';
@@ -3454,12 +3791,18 @@
             const panel = document.getElementById('commandBarExpanded');
             const btn = document.getElementById('commandExpandBtn');
             
+            // SVG icons for fullscreen (corners out) and exit fullscreen (corners in)
+            const expandIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><polyline points="21 3 14 10"/><polyline points="3 21 10 14"/></svg>';
+            const shrinkIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+            
             if (commandFullsize) {
                 panel.classList.add('fullsize');
-                btn.title = 'Shrink';
+                btn.innerHTML = shrinkIcon;
+                btn.title = 'Exit Fullscreen';
             } else {
                 panel.classList.remove('fullsize');
-                btn.title = 'Expand';
+                btn.innerHTML = expandIcon;
+                btn.title = 'Fullscreen';
             }
         }
         
@@ -3484,7 +3827,7 @@
         }
         
         // Mention/Tag Agents (main agent added dynamically from config)
-        const AGENT_ICONS_MAP = {
+        window.AGENT_ICONS_MAP = {
             'Architect': '🏛️',
             'Security Auditor': '🔒',
             'Code Reviewer': '📋',

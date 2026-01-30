@@ -1,5 +1,5 @@
-"""
-MOLTBOT Task Board - FastAPI Backend
+﻿"""
+RIZQ Task Board - FastAPI Backend
 Simple, fast, full agent control, LIVE updates
 """
 
@@ -34,8 +34,8 @@ STATIC_PATH = Path(__file__).parent / "static"
 # =============================================================================
 # BRANDING (configurable via environment variables)
 # =============================================================================
-MAIN_AGENT_NAME = os.getenv("MAIN_AGENT_NAME", "Assistant")
-MAIN_AGENT_EMOJI = os.getenv("MAIN_AGENT_EMOJI", "🤖")
+MAIN_AGENT_NAME = os.getenv("MAIN_AGENT_NAME", "Jarvis")
+MAIN_AGENT_EMOJI = os.getenv("MAIN_AGENT_EMOJI", "\U0001F6E1")
 HUMAN_NAME = os.getenv("HUMAN_NAME", "User")
 HUMAN_SUPERVISOR_LABEL = os.getenv("HUMAN_SUPERVISOR_LABEL", "User")
 BOARD_TITLE = os.getenv("BOARD_TITLE", "Task Board")
@@ -57,8 +57,8 @@ AGENT_TO_CLAWDBOT_ID = {
 # Alias for backward compatibility
 AGENT_TO_MOLTBOT_ID = AGENT_TO_CLAWDBOT_ID
 
-# Build mention regex dynamically from agent names
-MENTIONABLE_AGENTS = [name for name in AGENT_TO_CLAWDBOT_ID.keys() if name != MAIN_AGENT_NAME]
+# Build mention regex dynamically from agent names (including main agent now)
+MENTIONABLE_AGENTS = list(AGENT_TO_CLAWDBOT_ID.keys())
 MENTION_PATTERN = re.compile(r'@(' + '|'.join(re.escape(a) for a in MENTIONABLE_AGENTS) + r')', re.IGNORECASE)
 
 # Security: Load secrets from environment variables
@@ -123,9 +123,9 @@ def verify_internal_only(request: Request):
     raise HTTPException(status_code=403, detail="Access denied")
 
 async def notify_MOLTBOT(task_id: int, task_title: str, comment_agent: str, comment_content: str):
-    """Send webhook to MOLTBOT when a comment needs attention."""
-    if not MOLTBOT_ENABLED or comment_agent == "Moltbot":
-        return  # Don't notify for Molt's own comments
+    """Send webhook to Clawdbot when a comment needs attention."""
+    if not MOLTBOT_ENABLED or comment_agent == MAIN_AGENT_NAME:
+        return  # Don't notify for main agent's own comments
     
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
@@ -192,8 +192,9 @@ async def spawn_followup_session(task_id: int, task_title: str, agent_name: str,
         return None
     
     agent_id = AGENT_TO_MOLTBOT_ID.get(agent_name)
-    if not agent_id or agent_id == "main":
+    if not agent_id:
         return None
+    # Main agent can spawn follow-up sessions too
     
     system_prompt = AGENT_SYSTEM_PROMPTS.get(agent_id, "")
     
@@ -267,14 +268,18 @@ def set_task_session(task_id: int, session_key: Optional[str]):
 async def spawn_mentioned_agent(task_id: int, task_title: str, task_description: str, 
                                  mentioned_agent: str, mentioner: str, comment_content: str,
                                  previous_context: str = ""):
-    """Spawn a session for an @mentioned agent to contribute to a task they don't own."""
+    """Spawn a session for an @mentioned agent to contribute to a task they don't own.
+    
+    For the main agent (Jarvis), sends to main session instead of spawning.
+    """
     if not MOLTBOT_ENABLED:
         return None
     
     agent_id = AGENT_TO_CLAWDBOT_ID.get(mentioned_agent)
-    if not agent_id or agent_id == "main":
+    if not agent_id:
         return None
     
+    # All agents (including main) now spawn subagent sessions
     system_prompt = AGENT_SYSTEM_PROMPTS.get(agent_id, "")
     
     mention_prompt = f"""# You've Been Tagged: Task #{task_id}
@@ -405,6 +410,18 @@ When complete, post a comment with your findings using this format:
 """
 
 AGENT_SYSTEM_PROMPTS = {
+    "main": f"""You are {MAIN_AGENT_NAME}, the primary coordinator for {COMPANY_NAME}.
+
+Your focus:
+- General task implementation and coordination
+- Code writing and debugging
+- Cross-cutting concerns that don't fit specialist roles
+- Synthesizing input from other agents
+- Direct implementation work
+
+Project: {PROJECT_NAME}
+You're the hands-on executor. When assigned a task, dig in and get it done.""",
+
     "architect": f"""You are the Architect for {COMPANY_NAME}.
 
 Your focus:
@@ -475,12 +492,13 @@ async def spawn_agent_session(task_id: int, task_title: str, task_description: s
         return None
     
     agent_id = AGENT_TO_MOLTBOT_ID.get(agent_name)
-    if not agent_id or agent_id == "main":
-        return None  # Don't spawn for main agent or unknown
+    if not agent_id:
+        return None  # Don't spawn for unknown agents
+    # Note: Main agent (Jarvis) CAN spawn subagents now - no special case
     
     # Build the task prompt with guardrails
     system_prompt = AGENT_SYSTEM_PROMPTS.get(agent_id, "")
-    task_prompt = f"""# Task Assignment from MOLTBOT Task Board (Approved by User)
+    task_prompt = f"""# Task Assignment from RIZQ Task Board (Approved by {HUMAN_SUPERVISOR_LABEL})
 
 **Task #{task_id}:** {task_title}
 
@@ -651,6 +669,12 @@ def init_db():
         except:
             pass  # Column already exists
         
+        # Add archived column to action_items
+        try:
+            conn.execute("ALTER TABLE action_items ADD COLUMN archived INTEGER DEFAULT 0")
+        except:
+            pass  # Column already exists
+        
         # Chat messages table for persistent command bar history
         conn.execute("""
             CREATE TABLE IF NOT EXISTS chat_messages (
@@ -740,7 +764,7 @@ class Task(BaseModel):
 # APP
 # =============================================================================
 
-app = FastAPI(title="MOLTBOT Task Board", version="1.1.0")
+app = FastAPI(title="RIZQ Task Board", version="1.2.0")
 
 # Restrict CORS to localhost origins only
 ALLOWED_ORIGINS = [
@@ -1174,7 +1198,7 @@ async def add_comment(task_id: int, comment: CommentCreate):
             
             if matched_agent and matched_agent != comment.agent:  # Don't spawn self
                 agent_id = AGENT_TO_CLAWDBOT_ID.get(matched_agent)
-                if agent_id and agent_id != "main":
+                if agent_id:  # All agents including main can be spawned now
                     # Spawn the mentioned agent to respond
                     await spawn_mentioned_agent(
                         task_id=task_id,
@@ -1244,13 +1268,21 @@ class ActionItemCreate(BaseModel):
     comment_id: Optional[int] = None
 
 @app.get("/api/tasks/{task_id}/action-items")
-def get_action_items(task_id: int, resolved: bool = False):
-    """Get action items for a task."""
+def get_action_items(task_id: int, resolved: bool = False, archived: bool = False):
+    """Get action items for a task. By default excludes archived items."""
     with get_db() as conn:
-        rows = conn.execute(
-            "SELECT * FROM action_items WHERE task_id = ? AND resolved = ? ORDER BY created_at ASC",
-            (task_id, 1 if resolved else 0)
-        ).fetchall()
+        if archived:
+            # Only return archived items
+            rows = conn.execute(
+                "SELECT * FROM action_items WHERE task_id = ? AND archived = 1 ORDER BY created_at ASC",
+                (task_id,)
+            ).fetchall()
+        else:
+            # Return non-archived items filtered by resolved status
+            rows = conn.execute(
+                "SELECT * FROM action_items WHERE task_id = ? AND resolved = ? AND archived = 0 ORDER BY created_at ASC",
+                (task_id, 1 if resolved else 0)
+            ).fetchall()
         return [dict(row) for row in rows]
 
 @app.post("/api/tasks/{task_id}/action-items")
@@ -1305,6 +1337,51 @@ async def resolve_action_item(item_id: int):
     
     # Broadcast to all clients
     await manager.broadcast({"type": "action_item_resolved", "task_id": task_id, "item_id": item_id})
+    
+    return {"success": True, "item_id": item_id}
+
+
+@app.post("/api/action-items/{item_id}/archive")
+async def archive_action_item(item_id: int):
+    """Archive a resolved action item to hide it from main view."""
+    now = datetime.now().isoformat()
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM action_items WHERE id = ?", (item_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Action item not found")
+        
+        conn.execute(
+            "UPDATE action_items SET archived = 1 WHERE id = ?",
+            (item_id,)
+        )
+        conn.commit()
+        
+        task_id = row["task_id"]
+    
+    # Broadcast to all clients
+    await manager.broadcast({"type": "action_item_archived", "task_id": task_id, "item_id": item_id})
+    
+    return {"success": True, "item_id": item_id}
+
+
+@app.post("/api/action-items/{item_id}/unarchive")
+async def unarchive_action_item(item_id: int):
+    """Unarchive an action item to show it in main view again."""
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM action_items WHERE id = ?", (item_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Action item not found")
+        
+        conn.execute(
+            "UPDATE action_items SET archived = 0 WHERE id = ?",
+            (item_id,)
+        )
+        conn.commit()
+        
+        task_id = row["task_id"]
+    
+    # Broadcast to all clients
+    await manager.broadcast({"type": "action_item_unarchived", "task_id": task_id, "item_id": item_id})
     
     return {"success": True, "item_id": item_id}
 
@@ -1720,13 +1797,29 @@ async def chat_with_jarvis(msg: JarvisMessage):
     # Build the message content with taskboard context
     message_content = f"System: [TASKBOARD_CHAT] User says: {msg.message}\n\nRespond naturally."
     
-    # Include attachment info in the message if present  
+    # Include attachment data in the message for the agent to process
     if msg.attachments:
         for att in msg.attachments:
-            if att.get("type", "").startswith("image/"):
-                message_content += f"\n\n[Attached Image: {att.get('filename', 'image')}]"
-            else:
-                message_content += f"\n\n[Attached File: {att.get('filename', 'file')}]"
+            att_type = att.get("type", "")
+            att_data = att.get("data", "")
+            att_filename = att.get("filename", "file")
+            
+            if att_type.startswith("image/") and att_data:
+                # Embed full base64 image data so agent can use image tool
+                message_content += f"\n\n[IMAGE:{att_data}]"
+            elif att_data:
+                # For text files, try to extract and embed the content
+                if att_data.startswith("data:") and ";base64," in att_data:
+                    try:
+                        import base64
+                        # Extract base64 part after the comma
+                        b64_content = att_data.split(",", 1)[1]
+                        decoded = base64.b64decode(b64_content).decode("utf-8", errors="replace")
+                        message_content += f"\n\n**📎 Attached file: {att_filename}**\n```\n{decoded}\n```"
+                    except Exception as e:
+                        message_content += f"\n\n[Attached File: {att_filename} (decode error: {e})]"
+                else:
+                    message_content += f"\n\n[Attached File: {att_filename}]"
     
     # Normalize session key
     session_key = msg.session or "main"
