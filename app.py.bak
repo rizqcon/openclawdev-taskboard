@@ -44,9 +44,9 @@ AGENTS = [MAIN_AGENT_NAME, "Architect", "Security Auditor", "Code Reviewer", "UX
 STATUSES = ["Backlog", "In Progress", "Review", "Done", "Blocked"]
 PRIORITIES = ["Critical", "High", "Medium", "Low"]
 
-# Map task board agent names to OpenClaw agent IDs
-# Customize these to match your OpenClaw agent configuration
-AGENT_TO_OPENCLAW_ID = {
+# Map task board agent names to Clawdbot agent IDs
+# Customize these to match your Clawdbot agent configuration
+AGENT_TO_CLAWDBOT_ID = {
     MAIN_AGENT_NAME: "main",  # Main agent (handles command bar chat)
     "Architect": "architect",
     "Security Auditor": "security-auditor",
@@ -55,17 +55,17 @@ AGENT_TO_OPENCLAW_ID = {
 }
 
 # Alias for backward compatibility
-AGENT_TO_OPENCLAW_ID = AGENT_TO_OPENCLAW_ID
+AGENT_TO_MOLTBOT_ID = AGENT_TO_CLAWDBOT_ID
 
 # Build mention regex dynamically from agent names (including main agent now)
-MENTIONABLE_AGENTS = list(AGENT_TO_OPENCLAW_ID.keys())
+MENTIONABLE_AGENTS = list(AGENT_TO_CLAWDBOT_ID.keys())
 MENTION_PATTERN = re.compile(r'@(' + '|'.join(re.escape(a) for a in MENTIONABLE_AGENTS) + r')', re.IGNORECASE)
 
 # Security: Load secrets from environment variables
-OPENCLAW_GATEWAY_URL = os.getenv("OPENCLAW_GATEWAY_URL", "http://host.docker.internal:18789")
-OPENCLAW_TOKEN = os.getenv("OPENCLAW_TOKEN", "")
+MOLTBOT_GATEWAY_URL = os.getenv("MOLTBOT_GATEWAY_URL", "http://host.docker.internal:18789")
+MOLTBOT_TOKEN = os.getenv("MOLTBOT_TOKEN", "")
 TASKBOARD_API_KEY = os.getenv("TASKBOARD_API_KEY", "")
-OPENCLAW_ENABLED = bool(OPENCLAW_TOKEN)
+MOLTBOT_ENABLED = bool(MOLTBOT_TOKEN)
 
 # Project configuration (customize in .env)
 PROJECT_NAME = os.getenv("PROJECT_NAME", "My Project")
@@ -77,8 +77,8 @@ COMPLIANCE_FRAMEWORKS = os.getenv("COMPLIANCE_FRAMEWORKS", "your security requir
 # Warn if running without security
 if not TASKBOARD_API_KEY:
     print("⚠️  WARNING: TASKBOARD_API_KEY not set. API authentication disabled!")
-if not OPENCLAW_TOKEN:
-    print("⚠️  WARNING: OPENCLAW_TOKEN not set. OPENCLAW integration disabled!")
+if not MOLTBOT_TOKEN:
+    print("⚠️  WARNING: MOLTBOT_TOKEN not set. MOLTBOT integration disabled!")
 
 # File upload limits
 MAX_ATTACHMENT_SIZE_MB = 10
@@ -122,31 +122,31 @@ def verify_internal_only(request: Request):
     
     raise HTTPException(status_code=403, detail="Access denied")
 
-async def notify_OPENCLAW(task_id: int, task_title: str, comment_agent: str, comment_content: str):
-    """Send webhook to OpenClaw when a comment needs attention."""
-    if not OPENCLAW_ENABLED or comment_agent == MAIN_AGENT_NAME:
+async def notify_MOLTBOT(task_id: int, task_title: str, comment_agent: str, comment_content: str):
+    """Send webhook to Clawdbot when a comment needs attention."""
+    if not MOLTBOT_ENABLED or comment_agent == MAIN_AGENT_NAME:
         return  # Don't notify for main agent's own comments
     
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
-            # Use OPENCLAW's cron wake endpoint
+            # Use MOLTBOT's cron wake endpoint
             payload = {
                 "action": "wake",
                 "text": f"💬 Task Board: New comment on #{task_id} ({task_title}) from {comment_agent}:\n\n{comment_content[:200]}{'...' if len(comment_content) > 200 else ''}\n\nCheck and respond: http://localhost:8080"
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
-            await client.post(f"{OPENCLAW_GATEWAY_URL}/api/cron/wake", json=payload, headers=headers)
-            print(f"Notified OPENCLAW about comment from {comment_agent}")
+            await client.post(f"{MOLTBOT_GATEWAY_URL}/api/cron/wake", json=payload, headers=headers)
+            print(f"Notified MOLTBOT about comment from {comment_agent}")
     except Exception as e:
-        print(f"Webhook to OPENCLAW failed: {e}")
+        print(f"Webhook to MOLTBOT failed: {e}")
 
 
 async def send_to_agent_session(session_key: str, message: str) -> bool:
     """Send a follow-up message to an active agent session."""
-    if not OPENCLAW_ENABLED or not session_key:
+    if not MOLTBOT_ENABLED or not session_key:
         return False
     
     try:
@@ -159,11 +159,11 @@ async def send_to_agent_session(session_key: str, message: str) -> bool:
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -188,10 +188,10 @@ def get_task_session(task_id: int) -> Optional[str]:
 
 async def spawn_followup_session(task_id: int, task_title: str, agent_name: str, previous_context: str, new_message: str):
     """Spawn a follow-up session for an agent with conversation context."""
-    if not OPENCLAW_ENABLED:
+    if not MOLTBOT_ENABLED:
         return None
     
-    agent_id = AGENT_TO_OPENCLAW_ID.get(agent_name)
+    agent_id = AGENT_TO_MOLTBOT_ID.get(agent_name)
     if not agent_id:
         return None
     # Main agent can spawn follow-up sessions too
@@ -231,11 +231,11 @@ Respond now.
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -272,10 +272,10 @@ async def spawn_mentioned_agent(task_id: int, task_title: str, task_description:
     
     For the main agent (Jarvis), sends to main session instead of spawning.
     """
-    if not OPENCLAW_ENABLED:
+    if not MOLTBOT_ENABLED:
         return None
     
-    agent_id = AGENT_TO_OPENCLAW_ID.get(mentioned_agent)
+    agent_id = AGENT_TO_CLAWDBOT_ID.get(mentioned_agent)
     if not agent_id:
         return None
     
@@ -324,11 +324,11 @@ Respond now with your assessment.
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -487,11 +487,11 @@ DO NOT navigate to any external URLs. Your browser access is strictly for review
 }
 
 async def spawn_agent_session(task_id: int, task_title: str, task_description: str, agent_name: str):
-    """Spawn a OPENCLAW sub-agent session for a task via tools/invoke API."""
-    if not OPENCLAW_ENABLED:
+    """Spawn a MOLTBOT sub-agent session for a task via tools/invoke API."""
+    if not MOLTBOT_ENABLED:
         return None
     
-    agent_id = AGENT_TO_OPENCLAW_ID.get(agent_name)
+    agent_id = AGENT_TO_MOLTBOT_ID.get(agent_name)
     if not agent_id:
         return None  # Don't spawn for unknown agents
     # Note: Main agent (Jarvis) CAN spawn subagents now - no special case
@@ -529,7 +529,7 @@ Begin now.
     
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
-            # Use OPENCLAW's tools/invoke API to spawn sub-agent directly
+            # Use MOLTBOT's tools/invoke API to spawn sub-agent directly
             payload = {
                 "tool": "sessions_spawn",
                 "args": {
@@ -540,11 +540,11 @@ Begin now.
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -1069,7 +1069,7 @@ async def move_task(task_id: int, status: str = None, agent: str = None, reason:
     spawned = False
     if status == "In Progress" and old_status != "In Progress":
         assigned_agent = result.get("agent", "Unassigned")
-        if assigned_agent in AGENT_TO_OPENCLAW_ID and assigned_agent != "User":
+        if assigned_agent in AGENT_TO_MOLTBOT_ID and assigned_agent != "User":
             await spawn_agent_session(
                 task_id=task_id,
                 task_title=result["title"],
@@ -1189,15 +1189,15 @@ async def add_comment(task_id: int, comment: CommentCreate):
                 previous_context = "\n".join([f"**{r['agent']}:** {r['content'][:500]}" for r in reversed(comment_rows)])
         
         for mentioned_agent in set(mentions):  # dedupe mentions
-            # Normalize case to match AGENT_TO_OPENCLAW_ID keys
+            # Normalize case to match AGENT_TO_CLAWDBOT_ID keys
             matched_agent = None
-            for agent_name in AGENT_TO_OPENCLAW_ID.keys():
+            for agent_name in AGENT_TO_CLAWDBOT_ID.keys():
                 if agent_name.lower() == mentioned_agent.lower():
                     matched_agent = agent_name
                     break
             
             if matched_agent and matched_agent != comment.agent:  # Don't spawn self
-                agent_id = AGENT_TO_OPENCLAW_ID.get(matched_agent)
+                agent_id = AGENT_TO_CLAWDBOT_ID.get(matched_agent)
                 if agent_id:  # All agents including main can be spawned now
                     # Spawn the mentioned agent to respond
                     await spawn_mentioned_agent(
@@ -1218,7 +1218,7 @@ async def add_comment(task_id: int, comment: CommentCreate):
             row = conn.execute("SELECT agent FROM tasks WHERE id = ?", (task_id,)).fetchone()
             assigned_agent = row["agent"] if row else None
         
-        if assigned_agent and assigned_agent in AGENT_TO_OPENCLAW_ID and assigned_agent != "User":
+        if assigned_agent and assigned_agent in AGENT_TO_MOLTBOT_ID and assigned_agent != "User":
             # Get previous conversation context (last few comments)
             previous_comments = []
             with get_db() as conn:
@@ -1251,9 +1251,9 @@ Respond by posting a comment to the task."""
                     previous_context=context,
                     new_message=comment.content
                 )
-    elif comment.agent not in ["System", "User"] + list(AGENT_TO_OPENCLAW_ID.keys()):
-        # Notify OPENCLAW for other comments
-        await notify_OPENCLAW(task_id, task_title, comment.agent, comment.content)
+    elif comment.agent not in ["System", "User"] + list(AGENT_TO_MOLTBOT_ID.keys()):
+        # Notify MOLTBOT for other comments
+        await notify_MOLTBOT(task_id, task_title, comment.agent, comment.content)
     
     return result
 
@@ -1436,14 +1436,14 @@ class JarvisMessage(BaseModel):
 # Chat history now persisted in SQLite (no more in-memory loss on refresh)
 
 # =============================================================================
-# OPENCLAW SESSIONS API
+# CLAWDBOT SESSIONS API
 # =============================================================================
 
 @app.get("/api/sessions")
 async def list_sessions():
-    """Proxy to OpenClaw sessions_list to get active sessions."""
-    if not OPENCLAW_ENABLED:
-        return {"sessions": [], "error": "OpenClaw integration not enabled"}
+    """Proxy to Clawdbot sessions_list to get active sessions."""
+    if not MOLTBOT_ENABLED:
+        return {"sessions": [], "error": "Clawdbot integration not enabled"}
     
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -1455,11 +1455,11 @@ async def list_sessions():
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -1481,14 +1481,14 @@ async def list_sessions():
                     formatted = []
                     for s in sessions:
                         key = s.get("key", "")
-                        session_label = s.get("label", "")  # Label from OpenClaw
+                        session_label = s.get("label", "")  # Label from Clawdbot
                         display = s.get("displayName", key)
                         
-                        # Use OpenClaw's label
+                        # Use Clawdbot's label
                         if key == "main" or key == "agent:main:main":
                             label = "🛡️ Jarvis (Main)"
                         elif session_label:
-                            # Use OpenClaw's label if available
+                            # Use Clawdbot's label if available
                             label = f"🤖 {session_label}"
                         elif "subagent" in key:
                             # Subagent without label - use short ID
@@ -1510,15 +1510,15 @@ async def list_sessions():
                         })
                     
                     # Filter out deleted sessions and cleanup stale entries
-                    openclaw_keys = set(s["key"] for s in formatted)
+                    clawdbot_keys = set(s["key"] for s in formatted)
                     
                     with get_db() as conn:
                         deleted_rows = conn.execute("SELECT session_key FROM deleted_sessions").fetchall()
                         deleted_keys = set(row["session_key"] for row in deleted_rows)
                         
-                        # Cleanup: remove deleted_sessions entries that are no longer in OpenClaw
-                        # (OpenClaw has already removed them, so we don't need to track them anymore)
-                        orphaned_keys = deleted_keys - openclaw_keys
+                        # Cleanup: remove deleted_sessions entries that are no longer in Clawdbot
+                        # (Clawdbot has already removed them, so we don't need to track them anymore)
+                        orphaned_keys = deleted_keys - clawdbot_keys
                         if orphaned_keys:
                             placeholders = ",".join("?" * len(orphaned_keys))
                             conn.execute(f"DELETE FROM deleted_sessions WHERE session_key IN ({placeholders})", 
@@ -1545,9 +1545,9 @@ class SessionCreate(BaseModel):
 
 @app.post("/api/sessions/create")
 async def create_session(req: SessionCreate):
-    """Create a new OpenClaw session via sessions_spawn."""
-    if not OPENCLAW_ENABLED:
-        return {"success": False, "error": "OpenClaw integration not enabled"}
+    """Create a new Clawdbot session via sessions_spawn."""
+    if not MOLTBOT_ENABLED:
+        return {"success": False, "error": "Clawdbot integration not enabled"}
     
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
@@ -1561,11 +1561,11 @@ async def create_session(req: SessionCreate):
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -1584,8 +1584,8 @@ async def create_session(req: SessionCreate):
 @app.post("/api/sessions/{session_key}/stop")
 async def stop_session(session_key: str):
     """Stop/abort a running session."""
-    if not OPENCLAW_ENABLED:
-        return {"success": False, "error": "OpenClaw integration not enabled"}
+    if not MOLTBOT_ENABLED:
+        return {"success": False, "error": "Clawdbot integration not enabled"}
     
     try:
         # Use the gateway's abort mechanism
@@ -1599,13 +1599,13 @@ async def stop_session(session_key: str):
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             
             # First try to send abort message
             await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -1613,7 +1613,7 @@ async def stop_session(session_key: str):
             # Also try the direct abort endpoint if available
             try:
                 abort_response = await client.post(
-                    f"{OPENCLAW_GATEWAY_URL}/api/sessions/{session_key}/abort",
+                    f"{MOLTBOT_GATEWAY_URL}/api/sessions/{session_key}/abort",
                     headers=headers
                 )
                 if abort_response.status_code == 200:
@@ -1630,8 +1630,8 @@ async def stop_session(session_key: str):
 @app.post("/api/sessions/stop-all")
 async def stop_all_sessions():
     """Emergency stop all non-main sessions."""
-    if not OPENCLAW_ENABLED:
-        return {"success": False, "error": "OpenClaw integration not enabled"}
+    if not MOLTBOT_ENABLED:
+        return {"success": False, "error": "Clawdbot integration not enabled"}
     
     stopped = []
     errors = []
@@ -1644,11 +1644,11 @@ async def stop_all_sessions():
                 "args": {"limit": 50, "messageLimit": 0}
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )
@@ -1692,9 +1692,9 @@ async def stop_all_sessions():
 
 @app.delete("/api/sessions/{session_key}")
 async def delete_session(session_key: str):
-    """Close/delete a session - removes from OpenClaw's session store."""
-    if not OPENCLAW_ENABLED:
-        return {"success": False, "error": "OpenClaw integration not enabled"}
+    """Close/delete a session - removes from Clawdbot's session store."""
+    if not MOLTBOT_ENABLED:
+        return {"success": False, "error": "Clawdbot integration not enabled"}
     
     # Send stop signal first
     await stop_session(session_key)
@@ -1710,18 +1710,18 @@ async def delete_session(session_key: str):
         )
         conn.commit()
     
-    # Delete from OpenClaw's session store
-    openclaw_deleted = False
+    # Delete from Clawdbot's session store
+    clawdbot_deleted = False
     try:
         # Parse session key to get agent id (format: agent:<agentId>:<rest>)
         parts = session_key.split(":")
         if len(parts) >= 2 and parts[0] == "agent":
             agent_id = parts[1]  # e.g., "main"
             
-            # Path to OpenClaw session store (use env var if in Docker, fallback to home dir)
+            # Path to Clawdbot session store (use env var if in Docker, fallback to home dir)
             import os
-            openclaw_home = os.environ.get("OPENCLAW_DATA_PATH", os.path.expanduser("~/.openclaw"))
-            sessions_file = os.path.join(openclaw_home, "agents", agent_id, "sessions", "sessions.json")
+            clawdbot_home = os.environ.get("CLAWDBOT_DATA_PATH", os.path.expanduser("~/.clawdbot"))
+            sessions_file = os.path.join(clawdbot_home, "agents", agent_id, "sessions", "sessions.json")
             
             if os.path.exists(sessions_file):
                 import json
@@ -1738,17 +1738,17 @@ async def delete_session(session_key: str):
                     with open(sessions_file, 'w', encoding='utf-8') as f:
                         json.dump(sessions_data, f, indent=2)
                     
-                    openclaw_deleted = True
-                    print(f"Deleted session {session_key} from OpenClaw store")
+                    clawdbot_deleted = True
+                    print(f"Deleted session {session_key} from Clawdbot store")
                     
                     # Also delete transcript file if it exists
                     if session_id:
-                        transcript_file = os.path.join(openclaw_home, "agents", agent_id, "sessions", f"{session_id}.jsonl")
+                        transcript_file = os.path.join(clawdbot_home, "agents", agent_id, "sessions", f"{session_id}.jsonl")
                         if os.path.exists(transcript_file):
                             os.remove(transcript_file)
                             print(f"Deleted transcript {transcript_file}")
     except Exception as e:
-        print(f"Warning: Could not delete from OpenClaw store: {e}")
+        print(f"Warning: Could not delete from Clawdbot store: {e}")
     
     # Broadcast session deletion to all clients for real-time UI update
     await manager.broadcast({
@@ -1759,7 +1759,7 @@ async def delete_session(session_key: str):
     return {
         "success": True, 
         "message": f"Deleted session: {session_key}",
-        "openclaw_deleted": openclaw_deleted
+        "clawdbot_deleted": clawdbot_deleted
     }
 
 
@@ -1789,8 +1789,8 @@ def get_chat_history(limit: int = 100, session: str = "main"):
 @app.post("/api/jarvis/chat")
 async def chat_with_jarvis(msg: JarvisMessage):
     """Send a message to Jarvis via sessions_send (synchronous, waits for response)."""
-    if not OPENCLAW_ENABLED:
-        return {"sent": False, "error": "OpenClaw integration not enabled."}
+    if not MOLTBOT_ENABLED:
+        return {"sent": False, "error": "Clawdbot integration not enabled."}
     
     now = datetime.now().isoformat()
     
@@ -1861,12 +1861,12 @@ async def chat_with_jarvis(msg: JarvisMessage):
                 }
             }
             headers = {
-                "Authorization": f"Bearer {OPENCLAW_TOKEN}",
+                "Authorization": f"Bearer {MOLTBOT_TOKEN}",
                 "Content-Type": "application/json"
             }
             
             response = await client.post(
-                f"{OPENCLAW_GATEWAY_URL}/tools/invoke",
+                f"{MOLTBOT_GATEWAY_URL}/tools/invoke",
                 json=payload,
                 headers=headers
             )

@@ -1,8 +1,8 @@
-﻿# </> DEV Task Board
+# </> DEV Task Board
 
-A real-time Kanban board designed for **multi-agent AI workflows** with [Clawdbot](https://github.com/clawdbot/clawdbot). Assign tasks to AI agents, watch them work in real-time, and collaborate through persistent chat sessions.
+A real-time Kanban board designed for **multi-agent AI workflows** with [OpenClaw](https://github.com/openclaw/openclaw). Assign tasks to AI agents, watch them work in real-time, and collaborate through persistent chat sessions.
 
-![Task Board Preview](https://img.shields.io/badge/Status-Production_Ready-green) ![License](https://img.shields.io/badge/License-MIT-blue) ![Clawdbot](https://img.shields.io/badge/Clawdbot-Compatible-purple)
+![Task Board Preview](https://img.shields.io/badge/Status-Production_Ready-green) ![License](https://img.shields.io/badge/License-MIT-blue) ![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-purple)
 
 ## ✨ Features
 
@@ -23,7 +23,7 @@ A real-time Kanban board designed for **multi-agent AI workflows** with [Clawdbo
 | 🎨 | UX Manager | User flows, UI consistency |
 
 ### 💬 Communication
-- **Command Bar** — Direct chat with Moltbotbot from the header
+- **Command Bar** — Direct chat with your main agent from the header
 - **@Mentions** — Tag agents into any task conversation
 - **Action Items** — Questions, blockers, and completion tracking
 - **File Attachments** — Paste images or attach documents
@@ -39,20 +39,20 @@ A real-time Kanban board designed for **multi-agent AI workflows** with [Clawdbo
 
 ### Prerequisites
 - [Docker](https://www.docker.com/get-started) & Docker Compose
-- [MOLTBOT](https://github.com/moltbot/moltbot) running locally
+- [OpenClaw](https://github.com/openclaw/openclaw) running locally
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/rizqcon/moltdev-taskboard.git
-   cd moltdev-taskboard
+   git clone https://github.com/yourusername/openclaw-taskboard.git
+   cd openclaw-taskboard
    ```
 
 2. **Configure environment**
    ```bash
    cp .env.example .env
-   # Edit .env with your MOLTBOT token and generate an API key
+   # Edit .env with your OpenClaw token and generate an API key
    ```
 
 3. **Start the task board**
@@ -65,18 +65,141 @@ A real-time Kanban board designed for **multi-agent AI workflows** with [Clawdbo
    http://localhost:8080
    ```
 
+---
+
+## 🤖 AI-Assisted Setup
+
+The easiest way to set up the task board is to **ask your OpenClaw agent to do it for you!**
+
+### Connecting the Task Board (Channel Plugin)
+
+Once the task board is running, prompt your OpenClaw agent:
+
+```
+I have the task board running at http://localhost:8080. 
+Please onboard it as a channel plugin so you can receive 
+messages from the command bar and spawn sub-agents when 
+tasks move to "In Progress".
+```
+
+Your agent will:
+1. Update the `.env` with the correct gateway URL and token
+2. Verify the connection is working
+3. Test the `/tools/invoke` API
+
+### Onboarding the Dev Team (Sub-Agents)
+
+To set up the multi-agent dev team, prompt your agent:
+
+```
+I want to set up the dev team sub-agents (Architect, Security Auditor, 
+Code Reviewer, UX Manager). Please configure them in OpenClaw so they 
+can be spawned from the task board.
+```
+
+Your agent will guide you through:
+1. Adding agent definitions to your OpenClaw config
+2. Setting up the `dev-team.md` guardrails file
+3. Configuring spawn permissions
+
+---
+
+## 👥 Setting Up the Dev Team
+
+The task board works best with a team of specialized AI agents. Here's how to configure them:
+
+### Step 1: Configure Agents in OpenClaw
+
+Add these agents to your OpenClaw config (`~/.openclaw/openclaw.json`):
+
+```json
+{
+  "agents": {
+    "list": [
+      {
+        "id": "main",
+        "name": "YourAgentName",
+        "subagents": {
+          "allowAgents": ["architect", "security-auditor", "code-reviewer", "ux-manager"]
+        }
+      },
+      {
+        "id": "architect",
+        "name": "Architect",
+        "identity": { "name": "Architect", "emoji": "🏛️" },
+        "tools": { "profile": "coding", "deny": ["browser", "message"] }
+      },
+      {
+        "id": "security-auditor",
+        "name": "Security Auditor",
+        "identity": { "name": "Security Auditor", "emoji": "🔒" },
+        "tools": { "profile": "coding", "deny": ["browser", "message"] }
+      },
+      {
+        "id": "code-reviewer",
+        "name": "Code Reviewer",
+        "identity": { "name": "Code Reviewer", "emoji": "📝" },
+        "tools": { "profile": "coding", "deny": ["browser", "message"] }
+      },
+      {
+        "id": "ux-manager",
+        "name": "UX Manager",
+        "identity": { "name": "UX Manager", "emoji": "🎨" },
+        "tools": { "profile": "coding", "deny": ["message"] }
+      }
+    ]
+  }
+}
+```
+
+### Step 2: Create Your Dev Team Guardrails
+
+Copy the template to your OpenClaw workspace:
+
+```bash
+cp examples/dev-team-example.md ~/.openclaw/workspace/agents/dev-team.md
+```
+
+Edit `dev-team.md` to customize:
+- **Filesystem boundaries** — Paths agents can access
+- **Compliance context** — Your security requirements
+- **System prompts** — Role-specific instructions
+
+### Step 3: Update Your Agent's TOOLS.md
+
+Add this section to your main agent's `TOOLS.md`:
+
+```markdown
+## Task Board Integration
+
+**URL:** http://localhost:8080
+**Container:** openclaw-taskboard
+
+When spawning sub-agents from the task board:
+1. Include the guardrails from `agents/dev-team.md`
+2. Pass task context (title, description, recent comments)
+3. Instruct agent to post updates as comments on the task card
+
+### API Reference
+- Create comment: `POST /api/tasks/{id}/comments`
+- Move task: `POST /api/tasks/{id}/move`
+- Create action item: `POST /api/tasks/{id}/action-items`
+```
+
+---
+
 ## ⚙️ Configuration
 
 ### Environment Variables
 
 Copy `.env.example` to `.env` and customize:
 
-#### Moltbot Integration
+#### OpenClaw Integration
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `MOLTBOT_GATEWAY_URL` | Moltbot gateway URL | For AI features |
-| `MOLTBOT_TOKEN` | Moltbot API token | For AI features |
+| `OPENCLAW_GATEWAY_URL` | OpenClaw gateway URL | For AI features |
+| `OPENCLAW_TOKEN` | OpenClaw API token | For AI features |
 | `TASKBOARD_API_KEY` | API key for protected endpoints | Recommended |
 
 #### Project Configuration
@@ -91,18 +214,29 @@ These customize the agent guardrails and system prompts for your project:
 | `ALLOWED_PATHS` | Paths agents can access (comma-separated) | `/home/user/myproject, /workspace` |
 | `COMPLIANCE_FRAMEWORKS` | Security/compliance context | `SOC2, HIPAA, PCI-DSS` |
 
-> **Note:** Without Moltbot configured, the board works as a standard Kanban without AI agent automation.
+#### Branding
 
-### MOLTBOT Integration
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MAIN_AGENT_NAME` | Your main agent's display name | `Assistant` |
+| `MAIN_AGENT_EMOJI` | Emoji for main agent | `🤖` |
+| `HUMAN_NAME` | Your display name | `User` |
+| `BOARD_TITLE` | Page title | `Task Board` |
 
-**📖 See [MOLTBOT_SETUP.md](MOLTBOT_SETUP.md) for the full integration guide.**
+> **Note:** Without OpenClaw configured, the board works as a standard Kanban without AI agent automation.
+
+### OpenClaw Integration
+
+**📖 See [OPENCLAW_SETUP.md](OPENCLAW_SETUP.md) for the full integration guide.**
 
 Quick overview:
-1. **Configure agents** in MOLTBOT (`architect`, `security-auditor`, `code-reviewer`, `ux-manager`)
+1. **Configure agents** in OpenClaw (`architect`, `security-auditor`, `code-reviewer`, `ux-manager`)
 2. **Set your token** in `.env`
-3. **Add command bar handler** to your MOLTBOT's `TOOLS.md`
+3. **Add task board handler** to your agent's `TOOLS.md`
 
 The task board will auto-spawn agent sessions when tasks move to "In Progress".
+
+---
 
 ## 📋 Workflow
 
@@ -145,44 +279,17 @@ Task #1: "Review Auth System"          Task #2: "Design API Schema"
 - **True multitasking** — Multiple agents can work on different tasks simultaneously
 - **Clean handoffs** — Move task to Review, agent remembers everything when you ask follow-ups
 
-### Session Lifecycle
-
-1. **Spawn** — Session created when task moves to "In Progress"
-2. **Active** — Agent responds to comments, posts updates
-3. **Persist** — Session stays alive through "In Progress" and "Review"
-4. **Terminate** — Session ends when task moves to "Done"
-
 ---
 
 ## 👥 Multi-Agent Collaboration: @Mentions
 
 Need a second opinion? Tag another agent into the conversation.
 
-### The @Mention Flow
-
 ```
-You're working with Architect on a task...
-
 You: "@Security Auditor can you review the auth approach here?"
          ↓
-┌─────────────────────────────────────────┐
-│ Task Board detects @Security Auditor    │
-│ → Sends notification to Security agent  │
-│ → Security Auditor receives context     │
-│ → Posts response in same task thread    │
-└─────────────────────────────────────────┘
-         ↓
-Security Auditor: "I see a potential issue with..."
+Security Auditor receives context + responds in same thread
 ```
-
-### Group Chat Dynamics
-
-- **Any agent can be tagged** — Use the @ button in the chat input
-- **Full context shared** — Tagged agent sees the task description + recent conversation
-- **Threaded responses** — All agents respond in the same task chat
-- **Mix AI + Human** — You can jump in anytime, agents see your messages too
-
-### Use Cases
 
 | Scenario | Primary Agent | Tag In |
 |----------|--------------|--------|
@@ -192,128 +299,36 @@ Security Auditor: "I see a potential issue with..."
 
 ---
 
-## 📋 Action Items: Smart Task Intelligence
+## 📋 Action Items
 
-Action items are the task board's way of tracking **what needs attention**. They appear as notification bubbles on cards.
+Action items track **what needs attention** with notification bubbles on cards:
 
-### Three Types of Action Items
-
-| Type | Icon | Trigger | Purpose |
-|------|------|---------|---------|
-| **Question** | 🟡 | Agent creates manually | Agent needs clarification from human |
-| **Completion** | 🟢 | Auto-created on → Review | Signals work is ready for approval |
-| **Blocker** | 🔴 | Auto-created on → Blocked | Documents what's blocking progress |
-
-### Auto-Generation: Smart Workflow Triggers
-
-```python
-# When agent moves task to Review:
-Task → Review  ═══►  Creates "completion" action item automatically
-                     "Ready for review: [reason agent provided]"
-
-# When agent moves task to Blocked:
-Task → Blocked ═══►  Creates "blocker" action item automatically
-                     "Blocked: [reason agent provided]"
-```
-
-### The Question Flow (Agent → Human)
-
-```
-Agent is working and hits a decision point...
-
-Agent: Creates action item (type: question)
-       "Should we use JWT or session-based auth?"
-              ↓
-┌─────────────────────────────────┐
-│  Task Card                      │
-│  ┌───────────────────────────┐  │
-│  │ 🔴 1  ← Notification bubble│  │
-│  └───────────────────────────┘  │
-│                                 │
-│  Action Items:                  │
-│  ☐ Should we use JWT or...     │
-│    └─ question • Architect     │
-└─────────────────────────────────┘
-              ↓
-You click the checkbox or reply with an answer
-              ↓
-Agent sees the resolution and continues work
-```
-
-### Notification Bubbles
-
-The red badge on cards shows **unresolved action items**:
-
-- **Badge appears** → Something needs your attention
-- **Click card** → See what agents are asking
-- **Resolve item** → Badge count decreases
-- **All resolved** → Badge disappears
-
-### Managing Action Items
-
-| Action | How |
-|--------|-----|
-| View | Open card → See in task details |
-| Resolve | Click checkbox next to item |
-| Delete | Click 🗑️ to remove |
-| Quote/Reply | Click item to quote in your response |
+| Type | Trigger | Purpose |
+|------|---------|---------|
+| **Question** 🟡 | Agent creates manually | Agent needs clarification |
+| **Completion** 🟢 | Auto on → Review | Work ready for approval |
+| **Blocker** 🔴 | Auto on → Blocked | Documents what's blocking |
 
 ---
-
-## 🔔 Real-Time Updates: Everything is Live
-
-The entire board uses **WebSocket** for instant updates:
-
-- **Card moves** → All viewers see it immediately
-- **New comments** → Pop into the chat in real-time
-- **Action items** → Bubble counts update live
-- **Agent working** → Glowing indicator shows active AI
-
-### The "Agent Working" Indicator
-
-When an AI is actively processing (consuming tokens), the card glows:
-
-```
-┌─────────────────────────────┐
-│ ✨ Architect                │  ← Pulsing glow
-│ Design database schema      │
-│ [High] [Architect]          │
-└─────────────────────────────┘
-```
-
-- **Glow on** → Agent is thinking/responding
-- **Glow off** → Agent is idle, waiting for input
-- **Only on active tasks** → Won't appear on Done/Backlog
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Task Board UI                         │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐       │
-│  │ Backlog │ │In Prog  │ │ Review  │ │  Done   │       │
-│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘       │
-│       │           │           │           │             │
-│       └───────────┴───────────┴───────────┘             │
-│                       │ WebSocket                       │
-└───────────────────────┼─────────────────────────────────┘
-                        │
-┌───────────────────────┼─────────────────────────────────┐
-│              FastAPI Backend                             │
+│       WebSocket ←→ FastAPI Backend ←→ SQLite            │
+└─────────────────────────┬───────────────────────────────┘
+                          │ /tools/invoke
+┌─────────────────────────┴───────────────────────────────┐
+│                   OpenClaw Gateway                       │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐              │
-│  │ REST API │  │WebSocket │  │ MOLTBOT │              │
-│  │          │  │ Manager  │  │ Integration│             │
-│  └──────────┘  └──────────┘  └─────┬─────┘              │
-└────────────────────────────────────┼────────────────────┘
-                                     │
-┌────────────────────────────────────┼────────────────────┐
-│              MOLTBOT Gateway                           │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐              │
-│  │  Molt  │  │ Architect│  │ Security │  ...         │
-│  │ (main)   │  │          │  │ Auditor  │              │
+│  │  Main    │  │ Architect│  │ Security │  ...         │
+│  │  Agent   │  │          │  │ Auditor  │              │
 │  └──────────┘  └──────────┘  └──────────┘              │
 └─────────────────────────────────────────────────────────┘
 ```
+
+---
 
 ## 🔌 API Endpoints
 
@@ -333,49 +348,27 @@ When an AI is actively processing (consuming tokens), the card glows:
 - `POST /api/tasks/{id}/action-items` — Create action item
 - `POST /api/action-items/{id}/resolve` — Resolve item
 
-### Command Bar (Main Agent Chat)
-- `POST /api/molt/chat` — Send message to main agent
-- `POST /api/molt/respond` — Push response to command bar (requires API key)
+### Command Bar
+- `POST /api/jarvis/chat` — Send message to main agent
+- `POST /api/jarvis/respond` — Push response to command bar
 
 ### WebSocket
 - `WS /ws` — Real-time updates
 
+---
+
 ## 🎨 Customization
-
-### Branding (via Environment Variables)
-
-All branding is configurable via `.env` — no code changes needed:
-
-```env
-# Main agent (the coordinator)
-MAIN_AGENT_NAME=Jarvis          # Display name
-MAIN_AGENT_EMOJI=🤖             # Icon in chat
-
-# Human user
-HUMAN_NAME=User                 # Your display name
-HUMAN_SUPERVISOR_LABEL=User     # Used in agent prompts
-
-# UI
-BOARD_TITLE=Task Board          # Page title
-```
-
-The frontend automatically picks up these values from the `/api/config` endpoint.
 
 ### Adding New Agents
 
 Edit `app.py`:
 
 ```python
-# Add to the agents list
-AGENTS = [MAIN_AGENT_NAME, "Architect", "Your Agent", ...]
-
-# Map to Clawdbot agent ID
-AGENT_TO_CLAWDBOT_ID = {
+AGENT_TO_OPENCLAW_ID = {
     "Your Agent": "your-agent-id",
     ...
 }
 
-# Add system prompt
 AGENT_SYSTEM_PROMPTS = {
     "your-agent-id": "Your agent's system prompt...",
     ...
@@ -391,39 +384,7 @@ const AGENT_ICONS = {
 };
 ```
 
-## 📝 Changelog
-
-### v1.1.0 (2026-01-28)
-
-**New Features:**
-- **Markdown Support** — Chat messages now render full GitHub Flavored Markdown (headers, code blocks, tables, lists, blockquotes)
-- **File Uploads** — Attach images, text files (.txt, .md, .json, .csv, .log) to task chat
-- **Configurable Branding** — All agent names and UI labels configurable via environment variables
-- **Multi-Agent @Mentions** — Tag agents into conversations, spawns their session automatically
-- **Per-Agent Chat Colors** — Each agent has distinct color coding in chat
-
-**Branding Configuration:**
-```env
-MAIN_AGENT_NAME=Assistant      # Your main AI agent name
-MAIN_AGENT_EMOJI=🤖            # Emoji for the agent
-HUMAN_NAME=User                # Human user display name
-HUMAN_SUPERVISOR_LABEL=User    # Label in escalation prompts
-BOARD_TITLE=Task Board         # Page title
-```
-
-**UI Improvements:**
-- Modern iconography (📎 for attachments, ⛶ for fullscreen, ❓ for help)
-- User messages right-aligned with distinct styling
-- Improved code block and table rendering in chat
-- Theater mode for focused conversations
-
-### v1.0.0 (Initial Release)
-- Real-time Kanban board with WebSocket updates
-- Multi-agent support with auto-spawn on task assignment
-- Session persistence per task
-- Action items (questions, blockers, completions)
-- Command bar chat with main agent
-- Docker deployment
+---
 
 ## 📄 License
 
@@ -431,8 +392,8 @@ MIT License — see [LICENSE](LICENSE)
 
 ## 🙏 Credits
 
-Built for the [Clawdbot](https://github.com/clawdbot/clawdbot) community.
+Built for the [OpenClaw](https://github.com/openclaw/openclaw) community.
 
 ---
 
-**Questions?** Open an issue or check the [Clawdbot Discord](https://discord.com/invite/clawd)
+**Questions?** Open an issue or check the [OpenClaw Discord](https://discord.com/invite/clawd)

@@ -3138,7 +3138,7 @@
             }
         }
         
-        // Load available sessions from Clawdbot
+        // Load available sessions from OpenClaw
         async function loadSessions() {
             try {
                 const res = await fetch('/api/sessions');
@@ -3650,7 +3650,7 @@
                 }
             } catch (e) {
                 console.error('Jarvis chat error:', e);
-                jarvisChatHistory.push({ role: 'assistant', content: 'Failed to reach Jarvis. Is Clawdbot running?', time: formatTimeNow() });
+                jarvisChatHistory.push({ role: 'assistant', content: 'Failed to reach Jarvis. Is OpenClaw running?', time: formatTimeNow() });
                 renderJarvisChat();
             } finally {
                 jarvisLoading = false;

@@ -1,16 +1,16 @@
-﻿# 🤖 MOLTBOT Integration Guide
+﻿# 🤖 OPENCLAW Integration Guide
 
-This document explains how to configure MOLTBOT to work with the MOLTBOT Task Board's multi-agent system.
+This document explains how to configure OPENCLAW to work with the OPENCLAW Task Board's multi-agent system.
 
 ## Overview
 
 When you drag a task to "In Progress", the task board automatically:
-1. Calls MOLTBOT's `/tools/invoke` API
+1. Calls OPENCLAW's `/tools/invoke` API
 2. Spawns a sub-agent session with `sessions_spawn`
 3. Passes the task details and guardrails to the agent
 4. The agent posts updates as comments on the task
 
-**For this to work, you need agents configured in MOLTBOT.**
+**For this to work, you need agents configured in OPENCLAW.**
 
 ---
 
@@ -18,7 +18,7 @@ When you drag a task to "In Progress", the task board automatically:
 
 If you just want the task board without multi-agent automation:
 
-1. Set `MOLTBOT_ENABLED=false` in your `.env` (or leave `MOLTBOT_TOKEN` empty)
+1. Set `OPENCLAW_ENABLED=false` in your `.env` (or leave `OPENCLAW_TOKEN` empty)
 2. The board works as a standard Kanban — no AI sessions spawn
 3. You can still use it for manual task tracking
 
@@ -26,9 +26,9 @@ If you just want the task board without multi-agent automation:
 
 ## Full Multi-Agent Setup
 
-### Step 1: Configure MOLTBOT Agents
+### Step 1: Configure OPENCLAW Agents
 
-Add agents to your MOLTBOT config (`config.yaml` or via `MOLTBOT config`):
+Add agents to your OPENCLAW config (`config.yaml` or via `OPENCLAW config`):
 
 ```yaml
 agents:
@@ -62,12 +62,12 @@ agents:
       You have browser access to localhost only for UI review.
 ```
 
-### Step 2: Get Your MOLTBOT Token
+### Step 2: Get Your OPENCLAW Token
 
-Your gateway token is in your MOLTBOT config. Find it:
+Your gateway token is in your OPENCLAW config. Find it:
 
 ```bash
-MOLTBOT config get gateway.token
+OPENCLAW config get gateway.token
 ```
 
 Or check your `config.yaml`:
@@ -86,12 +86,12 @@ cp .env.example .env
 
 Edit `.env`:
 ```env
-MOLTBOT_GATEWAY_URL=http://host.docker.internal:18789
-MOLTBOT_TOKEN=your-MOLTBOT-token-here
+OPENCLAW_GATEWAY_URL=http://host.docker.internal:18789
+OPENCLAW_TOKEN=your-OPENCLAW-token-here
 TASKBOARD_API_KEY=generate-a-random-key
 ```
 
-**Note:** Use `host.docker.internal` if running the task board in Docker and MOLTBOT on your host machine.
+**Note:** Use `host.docker.internal` if running the task board in Docker and OPENCLAW on your host machine.
 
 ### Step 4: Restart Task Board
 
@@ -104,11 +104,11 @@ docker-compose up -d
 
 ## Agent ID Mapping
 
-The task board maps display names to MOLTBOT agent IDs:
+The task board maps display names to OPENCLAW agent IDs:
 
-| Task Board Name | MOLTBOT Agent ID |
+| Task Board Name | OPENCLAW Agent ID |
 |-----------------|-------------------|
-| Moltbot | `main` |
+| OpenClaw | `main` |
 | Architect | `architect` |
 | Security Auditor | `security-auditor` |
 | Code Reviewer | `code-reviewer` |
@@ -116,11 +116,11 @@ The task board maps display names to MOLTBOT agent IDs:
 
 ### Customizing Agent IDs
 
-If your MOLTBOT uses different agent IDs, edit `app.py`:
+If your OPENCLAW uses different agent IDs, edit `app.py`:
 
 ```python
-AGENT_TO_MOLTBOT_ID = {
-    "Moltbot": "main",
+AGENT_TO_OPENCLAW_ID = {
+    "OpenClaw": "main",
     "Architect": "your-architect-id",
     "Security Auditor": "your-security-id",
     # ... etc
@@ -131,9 +131,9 @@ AGENT_TO_MOLTBOT_ID = {
 
 ## Command Bar Setup (Two-Way Chat)
 
-The command bar lets you chat with Moltbot directly. For responses to appear in the command bar:
+The command bar lets you chat with OpenClaw directly. For responses to appear in the command bar:
 
-### 1. Add to Your MOLTBOT's TOOLS.md
+### 1. Add to Your OPENCLAW's TOOLS.md
 
 ```markdown
 ## Command Bar (Task Board Two-Way Chat)
@@ -150,7 +150,7 @@ This pushes the response to the command bar via WebSocket for real-time two-way 
 ### 2. How It Works
 
 1. You type in the command bar
-2. Task board sends `[COMMAND_BAR] your message` to MOLTBOT via wake
+2. Task board sends `[COMMAND_BAR] your message` to OPENCLAW via wake
 3. Molt (main agent) receives the message
 4. Molt responds by POSTing to `/api/<Moltname>/respond`
 5. Task board broadcasts response via WebSocket
@@ -188,9 +188,9 @@ You can customize guardrails in `app.py` → `AGENT_GUARDRAILS`.
 
 ### Sessions not spawning?
 
-1. **Check MOLTBOT is running:**
+1. **Check OPENCLAW is running:**
    ```bash
-   MOLTBOT status
+   OPENCLAW status
    ```
 
 2. **Check the token is correct:**
@@ -200,7 +200,7 @@ You can customize guardrails in `app.py` → `AGENT_GUARDRAILS`.
 
 3. **Check agent exists:**
    ```bash
-   MOLTBOT config get agents.architect
+   OPENCLAW config get agents.architect
    ```
 
 4. **Check Docker can reach host:**
@@ -211,7 +211,7 @@ You can customize guardrails in `app.py` → `AGENT_GUARDRAILS`.
 
 1. Ensure TOOLS.md has the command bar instructions
 2. Check `TASKBOARD_API_KEY` matches in both places
-3. Look for `[COMMAND_BAR]` prefix in MOLTBOT logs
+3. Look for `[COMMAND_BAR]` prefix in OPENCLAW logs
 
 ### Agents not posting comments?
 
@@ -238,7 +238,7 @@ The agent needs to make HTTP calls to the task board. Ensure:
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                   MOLTBOT Gateway                          │
+│                   OPENCLAW Gateway                          │
 │   Spawns sub-agent session with task prompt + guardrails   │
 └─────────────────────┬───────────────────────────────────────┘
                       │
@@ -268,6 +268,6 @@ The agent needs to make HTTP calls to the task board. Ensure:
 
 ## Need Help?
 
-- [MOLTBOT Documentation](https://docs.Molt.bot)
-- [MOLTBOT Discord](https://discord.com/invite/Molt)
+- [OPENCLAW Documentation](https://docs.Molt.bot)
+- [OPENCLAW Discord](https://discord.com/invite/Molt)
 - [GitHub Issues](https://github.com/rizqcon/moltdev-taskboard/issues)
