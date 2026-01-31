@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEV Task Board</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
     <!-- Markdown parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -245,16 +246,39 @@
         .jarvis-input-row {
             display: flex;
             gap: 0.5rem;
+            align-items: flex-end;
         }
         
         .jarvis-chat-input {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: 0.625rem 1rem;
             border: 1px solid var(--border);
             border-radius: 8px;
             background: var(--bg-main);
             color: var(--text);
             font-size: 0.9rem;
+            resize: none;
+            min-height: 44px;
+            max-height: 150px;
+            overflow-y: auto;
+            line-height: 1.4;
+            font-family: inherit;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+        
+        .jarvis-chat-input::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .jarvis-chat-input::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .jarvis-chat-input::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
         }
         
         .jarvis-chat-input:focus {
@@ -263,7 +287,9 @@
         }
         
         .jarvis-send-btn {
-            padding: 0.75rem 1rem;
+            height: 44px;
+            min-width: 44px;
+            padding: 0 1rem;
             background: var(--accent);
             border: none;
             border-radius: 8px;
@@ -271,6 +297,9 @@
             cursor: pointer;
             font-size: 1rem;
             transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .jarvis-send-btn:hover {
@@ -548,6 +577,23 @@
         .session-selector:focus {
             outline: none;
             border-color: var(--accent);
+        }
+        
+        /* Thinking indicator - glowing shield */
+        .thinking-indicator {
+            font-size: 1.25rem;
+            animation: thinking-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes thinking-pulse {
+            0%, 100% { 
+                opacity: 0.5;
+                filter: drop-shadow(0 0 2px var(--accent));
+            }
+            50% { 
+                opacity: 1;
+                filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 12px var(--accent));
+            }
         }
         
         /* Stop buttons - icon only, SQUARE (equal width/height) */
@@ -1634,14 +1680,20 @@
         }
         
         .attach-btn {
+            height: 44px;
+            min-width: 44px;
             background: var(--bg-dark);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 0 0.75rem;
+            padding: 0;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1.25rem;
             line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
         
         .attach-btn:hover {
@@ -1825,7 +1877,7 @@
         <!-- Molt Command Bar -->
         <div class="command-bar" id="commandBar" onclick="expandCommandBar()">
             <div class="command-bar-collapsed" id="commandBarCollapsed">
-                <span class="command-bar-icon">🤖</span>
+                <span class="command-bar-icon" id="commandBarIcon">🛡️</span>
                 <span class="command-bar-preview" id="commandBarPreview">Ask Jarvis anything...</span>
                 <button class="stop-icon-btn" id="stopAllBtn" onclick="event.stopPropagation(); stopAllAgents()" title="Stop all agents">■</button>
             </div>
@@ -1840,35 +1892,31 @@
                         </div>
                         <button class="new-session-btn" onclick="event.stopPropagation(); createNewSession()" title="New session">+ New</button>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span class="thinking-indicator" id="jarvisThinking" style="display: none;">🛡️</span>
                         <button class="stop-btn" id="stopSessionBtn" onclick="event.stopPropagation(); stopCurrentSession()" title="Stop this session">■</button>
                         <button class="command-expand-btn" onclick="event.stopPropagation(); toggleCommandFullsize()" title="Fullscreen" id="commandExpandBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><polyline points="21 3 14 10"/><polyline points="3 21 10 14"/></svg></button>
                         <button class="command-close-btn" onclick="event.stopPropagation(); collapseCommandBar()">×</button>
                     </div>
                 </div>
-                <!-- Native Jarvis Chat -->
+                <!-- Native Jarvis Chat - v1.8 -->
                 <div class="jarvis-chat-container" id="jarvisChatContainer">
                     <div class="jarvis-chat-messages" id="jarvisChatMessages">
                         <!-- Messages rendered here -->
                     </div>
                     <div class="jarvis-chat-input-area">
-                        <div class="jarvis-typing-indicator" id="jarvisTyping" style="display: none;">
-                            <span class="typing-dot"></span>
-                            <span class="typing-dot"></span>
-                            <span class="typing-dot"></span>
-                            <span class="typing-text">Jarvis is thinking...</span>
-                        </div>
                         <div class="command-paste-preview" id="commandPastePreview"></div>
                         <div class="jarvis-input-row">
-                            <button class="attach-btn" onclick="document.getElementById('commandFileInput').click()" title="Attach file" style="height: 44px; min-width: 44px;">📎</button>
+                            <button class="attach-btn" onclick="document.getElementById('commandFileInput').click()" title="Attach file">📎</button>
                             <input type="file" id="commandFileInput" class="file-input" accept="image/*,.pdf,.txt,.md,.json,.csv" onchange="handleCommandFileSelect(event)" multiple>
-                            <input 
-                                type="text" 
+                            <textarea 
                                 id="jarvisChatInput" 
                                 class="jarvis-chat-input" 
-                                placeholder="Ask Jarvis anything... (Ctrl+V to paste images)"
+                                placeholder="Ctrl+V to paste images · Shift+Enter for new line"
+                                rows="1"
                                 onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendJarvisMessage(); }"
-                            />
+                                oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 150) + 'px';"
+                            ></textarea>
                             <button class="jarvis-send-btn" onclick="sendJarvisMessage()" id="jarvisSendBtn">
                                 <span>→</span>
                             </button>
@@ -2248,12 +2296,16 @@
             const mainEmoji = b.mainAgentEmoji || '🤖';
             const humanLabel = b.humanSupervisorLabel || 'User';
             
+            // Update command bar icon
+            const commandBarIcon = document.getElementById('commandBarIcon');
+            if (commandBarIcon) commandBarIcon.textContent = mainEmoji;
+            
             // Update placeholder text
             const preview = document.getElementById('commandBarPreview');
             if (preview) preview.textContent = `Ask ${mainAgent} anything...`;
             
             const chatInput = document.getElementById('jarvisChatInput');
-            if (chatInput) chatInput.placeholder = `Ask ${mainAgent} anything... (Ctrl+V to paste images)`;
+            if (chatInput) chatInput.placeholder = `Ctrl+V to paste images · Shift+Enter for new line`;
             
             // Update typing indicator
             const typingText = document.querySelector('.typing-text');
@@ -2986,6 +3038,44 @@
         
         // WebSocket for live updates
         let ws = null;
+        let wsConnected = false;
+        let wsReconnecting = false;
+        let wsReconnectAttempts = 0;
+        const WS_MAX_RECONNECT_ATTEMPTS = 5;
+        
+        function showReconnectingIndicator() {
+            wsReconnecting = true;
+            // Show in collapsed preview
+            const preview = document.getElementById('commandBarPreview');
+            if (preview && !commandBarExpanded) {
+                preview.dataset.originalText = preview.textContent;
+                preview.textContent = '🔄 Reconnecting...';
+                preview.style.opacity = '0.7';
+            }
+            // Also show glowing shield in expanded header (reuse thinking indicator)
+            const thinking = document.getElementById('jarvisThinking');
+            if (thinking) {
+                thinking.style.display = 'inline';
+                thinking.title = 'Reconnecting...';
+            }
+        }
+        
+        function hideReconnectingIndicator() {
+            wsReconnecting = false;
+            wsReconnectAttempts = 0;
+            const preview = document.getElementById('commandBarPreview');
+            if (preview && preview.dataset.originalText) {
+                preview.textContent = preview.dataset.originalText;
+                preview.style.opacity = '1';
+                delete preview.dataset.originalText;
+            }
+            // Hide the glowing shield (unless jarvisLoading is true)
+            const thinking = document.getElementById('jarvisThinking');
+            if (thinking && !jarvisLoading) {
+                thinking.style.display = 'none';
+                thinking.title = '';
+            }
+        }
         
         function connectWebSocket() {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -2993,6 +3083,8 @@
             
             ws.onopen = () => {
                 console.log('Live updates connected');
+                wsConnected = true;
+                hideReconnectingIndicator();
                 setInterval(() => {
                     if (ws.readyState === WebSocket.OPEN) {
                         ws.send('ping');
@@ -3079,12 +3171,16 @@
             };
             
             ws.onclose = () => {
-                console.log('WebSocket closed, reconnecting in 3s...');
-                setTimeout(connectWebSocket, 3000);
+                wsConnected = false;
+                wsReconnectAttempts++;
+                console.log(`WebSocket closed, attempt ${wsReconnectAttempts}/${WS_MAX_RECONNECT_ATTEMPTS}, reconnecting in 2s...`);
+                showReconnectingIndicator();
+                setTimeout(connectWebSocket, 2000);
             };
             
             ws.onerror = (err) => {
                 console.error('WebSocket error:', err);
+                wsConnected = false;
                 ws.close();
             };
         }
@@ -3595,8 +3691,9 @@
             // Prepare attachments for sending
             const attachmentsToSend = commandAttachments.length > 0 ? [...commandAttachments] : null;
             
-            // Clear input immediately
+            // Clear input immediately and reset height
             input.value = '';
+            input.style.height = 'auto';
             clearCommandAttachments();
             
             // Optimistic UI: add user message immediately
@@ -3614,7 +3711,7 @@
             
             // Show typing indicator
             jarvisLoading = true;
-            document.getElementById('jarvisTyping').style.display = 'flex';
+            document.getElementById('jarvisThinking').style.display = 'inline';
             document.getElementById('jarvisSendBtn').disabled = true;
             
             try {
@@ -3626,13 +3723,27 @@
                     payload.attachments = attachmentsToSend;
                 }
                 
-                const res = await fetch('/api/jarvis/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const data = await res.json();
+                // Retry logic for transient failures (e.g., container restart)
+                let res, data;
+                const maxRetries = 3;
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        res = await fetch('/api/jarvis/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        data = await res.json();
+                        break; // Success, exit retry loop
+                    } catch (fetchErr) {
+                        if (attempt < maxRetries) {
+                            console.log(`Jarvis fetch attempt ${attempt} failed, retrying in ${attempt}s...`);
+                            await new Promise(r => setTimeout(r, attempt * 1000));
+                        } else {
+                            throw fetchErr; // Final attempt failed
+                        }
+                    }
+                }
                 
                 // Reload history from server to get the new messages with proper IDs
                 // This will replace the optimistic message with the real one
@@ -3650,11 +3761,21 @@
                 }
             } catch (e) {
                 console.error('Jarvis chat error:', e);
-                jarvisChatHistory.push({ role: 'assistant', content: 'Failed to reach Jarvis. Is OpenClaw running?', time: formatTimeNow() });
+                // If we're reconnecting, show a gentler message
+                if (wsReconnecting || !wsConnected) {
+                    jarvisChatHistory.push({ 
+                        role: 'assistant', 
+                        content: '🔄 Connection interrupted. Your message will be sent when reconnected. Please wait...', 
+                        time: formatTimeNow(),
+                        _pending: true
+                    });
+                } else {
+                    jarvisChatHistory.push({ role: 'assistant', content: 'Failed to reach Jarvis. Is OpenClaw running?', time: formatTimeNow() });
+                }
                 renderJarvisChat();
             } finally {
                 jarvisLoading = false;
-                document.getElementById('jarvisTyping').style.display = 'none';
+                document.getElementById('jarvisThinking').style.display = 'none';
                 document.getElementById('jarvisSendBtn').disabled = false;
             }
         }
