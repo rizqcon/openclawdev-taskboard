@@ -4,6 +4,32 @@ A real-time Kanban board designed for **multi-agent AI workflows** with [OpenCla
 
 ![Task Board Preview](https://img.shields.io/badge/Status-Production_Ready-green) ![License](https://img.shields.io/badge/License-MIT-blue) ![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-purple)
 
+---
+
+## 📋 Changelog
+
+### v1.5.0 (2025-02-02)
+
+#### ✨ New Features
+- **Column Sorting** — Each column now has a sort dropdown with options:
+  - Priority (Critical → Low)
+  - Latest (most recent activity first)
+  - Agent (alphabetical by assignee)
+  - Custom (drag-and-drop reordering)
+- **Multi-Agent Thinking Indicators** — Cards and chat now show all working agents simultaneously with animated dot + icon
+- **Consistent Indicator Styling** — Unified glowing dot + icon animation across card headers, chat section, and command bar
+
+#### 🔧 Improvements
+- **Auto-Clear Working Status** — Agent's "thinking" indicator automatically clears when they post a comment
+- **Skip Redundant Spawns** — Moving a card to "In Progress" won't re-spawn an agent that's already working on it
+- **Enforced Start/Stop Work Calls** — All agent spawn instructions now require start-work/stop-work API calls for consistent indicator behavior
+
+#### 🐛 Bug Fixes
+- Fixed thinking indicator not clearing when agent finishes work
+- Fixed duplicate agent spawns when moving cards already being worked on
+
+---
+
 ## ✨ Features
 
 ### 🎯 Core Functionality
