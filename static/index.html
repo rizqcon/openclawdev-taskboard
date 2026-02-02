@@ -432,31 +432,44 @@
         
         .command-paste-preview {
             display: none;
-            padding: 0.5rem;
-            background: var(--bg-dark);
-            border-radius: 6px;
             margin-bottom: 0.5rem;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            padding: 0.25rem;
         }
         
         .command-paste-preview.active {
             display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         
-        .command-paste-preview img {
-            max-width: 150px;
-            max-height: 100px;
-            border-radius: 4px;
+        .command-paste-preview .command-attachment-item img {
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 6px;
+            display: block;
         }
         
         .command-paste-preview .remove-btn {
-            background: none;
-            border: none;
-            color: var(--critical);
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background: var(--critical);
+            border: 2px solid var(--bg-card);
+            border-radius: 50%;
+            color: white;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 12px;
+            line-height: 14px;
+            text-align: center;
+            padding: 0;
+            font-weight: bold;
+        }
+        
+        .command-paste-preview .remove-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
         }
         
         .command-file-name {
@@ -1441,9 +1454,10 @@
         /* Modal - Theater Mode */
         .modal.theater-mode {
             max-width: 95vw;
-            max-height: 95vh;
+            max-height: calc(100vh - 2rem);
             width: 95vw;
-            height: 95vh;
+            height: calc(100vh - 2rem);
+            margin: 1rem;
         }
         
         .modal-header {
@@ -1743,12 +1757,12 @@
         /* Messages container - bordered box, scrollable */
         .chat-messages {
             padding: 1rem;
-            margin: 1rem 1.5rem 1rem 1.5rem;
+            margin: 1rem 1.5rem 0.75rem 1.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
             min-height: 150px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
             background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(15, 23, 42, 0.8) 100%);
             border: 1px solid var(--border);
@@ -1807,24 +1821,25 @@
         
         .theater-mode .chat-header {
             flex: 0 0 auto;
+            padding: 0.5rem 1.5rem;
         }
         
         .theater-mode .chat-messages {
             flex: 1 1 0;
-            max-height: calc(95vh - 220px) !important;
-            min-height: 200px;
-            margin: 0.75rem 1.5rem;
+            min-height: 0;
+            margin: 0.25rem 1.5rem 0.25rem 1.5rem;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(15, 23, 42, 0.8) 100%);
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow-y: scroll !important;
+            overflow-y: auto !important;
         }
         
         .theater-mode .chat-input-area {
             flex: 0 0 auto;
-            padding: 0.75rem 1.5rem 1rem 1.5rem;
+            padding: 0.25rem 1.5rem 0.25rem 1.5rem;
             background: var(--bg-card);
+            border-radius: 0 0 16px 16px;
         }
         
         .theater-mode .chat-input {
@@ -1914,9 +1929,16 @@
         }
         
         .chat-message-content img {
-            max-width: 100%;
+            max-width: min(100%, 400px);
+            max-height: 300px;
+            object-fit: contain;
             border-radius: 6px;
             margin-top: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .chat-message-content img:hover {
+            opacity: 0.9;
         }
         
         /* Markdown styles for chat */
@@ -1982,6 +2004,7 @@
         .chat-input-area {
             padding: 0 1.5rem 1rem 1.5rem;
             background: var(--bg-card);
+            border-radius: 0 0 16px 16px;
         }
         
         .chat-input-wrapper {
@@ -2085,31 +2108,49 @@
         }
         
         .paste-preview {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background: var(--bg-dark);
-            border-radius: 6px;
             display: none;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem;
+            gap: 0.5rem;
         }
         
         .paste-preview.active {
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .paste-preview .paste-preview-item {
+            position: relative;
         }
         
         .paste-preview img {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 4px;
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 6px;
+            display: block;
         }
         
         .paste-preview .remove-btn {
-            display: block;
-            margin-top: 0.5rem;
-            color: var(--critical);
-            background: none;
-            border: none;
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background: var(--critical);
+            border: 2px solid var(--bg-card);
+            border-radius: 50%;
+            color: white;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 12px;
+            line-height: 14px;
+            text-align: center;
+            padding: 0;
+            font-weight: bold;
+        }
+        
+        .paste-preview .remove-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
         }
         
         .attach-btn {
@@ -2517,10 +2558,7 @@
                     
                     <!-- Chat Input Area - Inside scrollable content -->
                     <div class="chat-input-area">
-                        <div class="paste-preview" id="pastePreview">
-                            <img id="pastePreviewImg" src="">
-                            <button class="remove-btn" onclick="clearPastedImage()">× Remove image</button>
-                        </div>
+                        <div class="paste-preview" id="pastePreview"></div>
                         <div class="chat-input-wrapper">
                             <div class="mention-dropdown" id="mentionDropdown"></div>
                             <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach file">📎</button>
@@ -2559,7 +2597,7 @@
         let workingAgentsByTask = {}; // taskId -> Set of working agent names (for multi-agent display)
         let columnSortMode = {}; // status -> sort mode (latest|priority|agent|custom)
         let customSortOrder = {}; // status -> array of task IDs in custom order
-        let pastedImageData = null;
+        let pastedImages = []; // Array for multiple images
         let theaterMode = false;
         let detailsVisible = true;
         
@@ -2716,7 +2754,7 @@
             
             config.statuses.forEach(status => {
                 let statusTasks = tasks.filter(t => t.status === status);
-                const sortMode = columnSortMode[status] || 'priority';
+                const sortMode = columnSortMode[status] || 'latest';
                 
                 // Apply sorting
                 statusTasks = sortTasksForColumn(statusTasks, status, sortMode);
@@ -3037,6 +3075,17 @@
             
             await loadAndRenderComments(taskId);
             await loadAndRenderActionItems(taskId);
+            
+            // Re-attach paste handler to ensure it works in modal context
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.removeEventListener('paste', handlePaste);
+                chatInput.addEventListener('paste', handlePaste);
+                console.log('Paste handler attached to chatInput');
+            }
+            
+            // Clear any previous paste preview
+            clearPastedImage();
         }
         
         function openSourceFile() {
@@ -3469,11 +3518,12 @@
             const input = document.getElementById('chatInput');
             let content = input.value.trim();
             
-            if (!content && !pastedImageData && !attachedFile) return;
+            if (!content && pastedImages.length === 0 && !attachedFile) return;
             
-            // If there's a pasted image, include it
-            if (pastedImageData) {
-                content = content ? `${content}\n[IMAGE:${pastedImageData}]` : `[IMAGE:${pastedImageData}]`;
+            // If there are pasted images, include them
+            if (pastedImages.length > 0) {
+                const imageMarkup = pastedImages.map(img => `[IMAGE:${img}]`).join('\n');
+                content = content ? `${content}\n${imageMarkup}` : imageMarkup;
             }
             
             // If there's an attached file, include it as a code block
@@ -3606,18 +3656,32 @@
         
         // Paste handler for images
         function setupPasteHandler() {
-            document.getElementById('chatInput').addEventListener('paste', handlePaste);
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('paste', handlePaste);
+            } else {
+                console.warn('chatInput not found for paste handler');
+            }
         }
         
         function handlePaste(event) {
+            console.log('Paste event triggered', event);
             const items = event.clipboardData?.items;
-            if (!items) return;
+            if (!items) {
+                console.log('No clipboard items');
+                return;
+            }
             
+            console.log('Clipboard items:', items.length);
             for (const item of items) {
+                console.log('Item type:', item.type);
                 if (item.type.startsWith('image/')) {
                     event.preventDefault();
                     const file = item.getAsFile();
-                    processImageFile(file);
+                    console.log('Got image file:', file);
+                    if (file) {
+                        processImageFile(file);
+                    }
                     break;
                 }
             }
@@ -3640,14 +3704,35 @@
         function processImageFile(file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                pastedImageData = e.target.result;
+                pastedImages.push(e.target.result);
                 attachedFile = null;
-                document.getElementById('pastePreviewImg').src = pastedImageData;
-                document.getElementById('pastePreviewImg').style.display = 'block';
-                document.getElementById('filePreviewName').style.display = 'none';
-                document.getElementById('pastePreview').classList.add('active');
+                renderPastePreview();
             };
             reader.readAsDataURL(file);
+        }
+        
+        function renderPastePreview() {
+            const previewContainer = document.getElementById('pastePreview');
+            if (!previewContainer) return;
+            
+            if (pastedImages.length === 0) {
+                previewContainer.classList.remove('active');
+                previewContainer.innerHTML = '';
+                return;
+            }
+            
+            previewContainer.innerHTML = pastedImages.map((img, idx) => `
+                <div class="paste-preview-item" style="position: relative; display: inline-block;">
+                    <img src="${img}" alt="Pasted image ${idx + 1}">
+                    <button class="remove-btn" onclick="removePastedImage(${idx})" title="Remove">×</button>
+                </div>
+            `).join('');
+            previewContainer.classList.add('active');
+        }
+        
+        function removePastedImage(index) {
+            pastedImages.splice(index, 1);
+            renderPastePreview();
         }
         
         function processTextFile(file) {
@@ -3676,13 +3761,9 @@
         }
         
         function clearPastedImage() {
-            pastedImageData = null;
+            pastedImages = [];
             attachedFile = null;
-            document.getElementById('pastePreview').classList.remove('active');
-            document.getElementById('pastePreviewImg').src = '';
-            document.getElementById('pastePreviewImg').style.display = 'block';
-            const fileNameEl = document.getElementById('filePreviewName');
-            if (fileNameEl) fileNameEl.style.display = 'none';
+            renderPastePreview();
             document.getElementById('fileInput').value = '';
         }
         
@@ -4322,17 +4403,16 @@
             preview.innerHTML = commandAttachments.map((att, idx) => {
                 if (att.type.startsWith('image/')) {
                     return `
-                        <div class="command-attachment-item">
-                            <img src="${att.data}" alt="${att.filename}" style="max-width: 80px; max-height: 60px; border-radius: 4px;">
-                            <span class="command-file-name">${att.filename}</span>
-                            <button class="remove-attachment" onclick="removeCommandAttachment(${idx})">×</button>
+                        <div class="command-attachment-item" style="position: relative; display: inline-block; margin-right: 0.5rem;">
+                            <img src="${att.data}" alt="${att.filename}">
+                            <button class="remove-btn" onclick="removeCommandAttachment(${idx})" title="Remove">×</button>
                         </div>
                     `;
                 } else {
                     return `
-                        <div class="command-attachment-item">
+                        <div class="command-attachment-item" style="display: inline-flex; align-items: center; gap: 0.25rem; background: var(--bg-dark); padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">
                             <span class="command-file-name">${att.filename}</span>
-                            <button class="remove-attachment" onclick="removeCommandAttachment(${idx})">×</button>
+                            <button class="remove-btn" onclick="removeCommandAttachment(${idx})" title="Remove" style="position: static; width: 16px; height: 16px; font-size: 10px; line-height: 12px;">×</button>
                         </div>
                     `;
                 }

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-02-02
+
+### Added
+- **Image attachments for command bar chat**: Images now saved to `/data/attachments/` and passed as readable file paths to agents
+- **Sub-agent guardrails documentation**: Updated `examples/dev-team-example.md` with comprehensive guardrails including:
+  - Identity rules (main agent clones vs domain-specific agents)
+  - Filesystem boundaries
+  - Git safeword requirements
+  - Browser access matrix (UX Manager only)
+  - Compliance context templates
+
+### Changed
+- **Default column sort**: Changed from "Priority" to "Latest" (most recent first)
+- **Theater mode spacing**: Tightened padding throughout for more conversation space
+  - Chat header: 0.75rem → 0.5rem
+  - Chat messages margin: 0.75rem → 0.25rem
+  - Chat input area: 0.75rem/1rem → 0.25rem
+
+### Fixed
+- **Double image paste bug**: Removed duplicate `onpaste` handler that was causing images to paste twice
+- **Card bottom border radius**: Added `border-radius: 0 0 16px 16px` to chat-input-area so modal corners are visible
+- **UX Manager browser privilege**: Clarified in dev-team template that UX Manager is the ONLY agent with browser access; others must request their help
+
 ## [1.1.0] - 2026-01-31
 
 ### Added

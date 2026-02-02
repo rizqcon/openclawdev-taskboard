@@ -15,8 +15,9 @@ from contextlib import contextmanager
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Depends, Header, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel, field_validator
 
 # =============================================================================
@@ -73,6 +74,14 @@ COMPANY_NAME = os.getenv("COMPANY_NAME", "Acme Corp")
 COMPANY_CONTEXT = os.getenv("COMPANY_CONTEXT", "software development")
 ALLOWED_PATHS = os.getenv("ALLOWED_PATHS", "/workspace, /project")
 COMPLIANCE_FRAMEWORKS = os.getenv("COMPLIANCE_FRAMEWORKS", "your security requirements")
+
+# IP-based access restriction
+# Always allowed: localhost variants and Docker internal networks
+ALWAYS_ALLOWED_IPS = {"127.0.0.1", "localhost", "::1"}
+# Additional allowed IPs from env (comma-separated)
+_env_ips = os.getenv("ALLOWED_IPS", "").strip()
+ALLOWED_IPS = set(ip.strip() for ip in _env_ips.split(",") if ip.strip()) if _env_ips else set()
+print(f"🔒 IP Restriction: localhost + 172.20.200.59 + 172.20.200.119 + 172.18.0.1 (internal) + {ALLOWED_IPS if ALLOWED_IPS else 'no external IPs'}")
 
 # Warn if running without security
 if not TASKBOARD_API_KEY:
@@ -783,6 +792,41 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["Authorization", "X-API-Key", "Content-Type"],
 )
+
+# IP Restriction Middleware
+# Specific Docker IPs allowed (NOT blanket 172.x.x.x or 10.x.x.x)
+ALLOWED_DOCKER_IPS = {
+    "172.20.200.59",  # OpenClaw gateway IP (user's access)
+    "172.20.200.119", # Additional allowed IP (user's access)
+    "172.18.0.1",     # Internal Docker bridge network (container-to-container)
+}
+
+class IPRestrictionMiddleware(BaseHTTPMiddleware):
+    """Block requests from IPs not in the allowed list."""
+    
+    async def dispatch(self, request: Request, call_next):
+        client_ip = request.client.host if request.client else None
+        
+        # Always allow localhost
+        if client_ip in ALWAYS_ALLOWED_IPS:
+            return await call_next(request)
+        
+        # Allow specific Docker IPs (NOT blanket ranges)
+        if client_ip in ALLOWED_DOCKER_IPS:
+            return await call_next(request)
+        
+        # Check against allowed IPs from env
+        if client_ip in ALLOWED_IPS:
+            return await call_next(request)
+        
+        # Block with clear message
+        print(f"🚫 Blocked request from {client_ip} - not in allowed IPs")
+        return PlainTextResponse(
+            f"Access denied. IP {client_ip} not authorized.",
+            status_code=403
+        )
+
+app.add_middleware(IPRestrictionMiddleware)
 
 # Initialize DB on startup
 @app.on_event("startup")
@@ -1847,14 +1891,48 @@ async def chat_with_jarvis(msg: JarvisMessage):
     
     # Include attachment data in the message for the agent to process
     if msg.attachments:
+        import base64 as b64_module
+        import uuid
+        
+        # Create attachments directory if needed
+        attachments_dir = DATA_DIR / "attachments"
+        attachments_dir.mkdir(exist_ok=True)
+        
         for att in msg.attachments:
             att_type = att.get("type", "")
             att_data = att.get("data", "")
             att_filename = att.get("filename", "file")
             
             if att_type.startswith("image/") and att_data:
-                # Embed full base64 image data so agent can use image tool
-                message_content += f"\n\n[IMAGE:{att_data}]"
+                # Save image to file so agent can read it with Read tool
+                try:
+                    # Extract base64 data from data URL
+                    if att_data.startswith("data:") and ";base64," in att_data:
+                        b64_content = att_data.split(",", 1)[1]
+                    else:
+                        b64_content = att_data
+                    
+                    # Determine file extension
+                    ext = att_type.split("/")[1].split(";")[0]  # e.g., "png" from "image/png"
+                    if ext not in ["png", "jpg", "jpeg", "gif", "webp"]:
+                        ext = "png"
+                    
+                    # Generate unique filename
+                    img_filename = f"{uuid.uuid4().hex[:8]}_{att_filename or 'image'}"
+                    if not img_filename.endswith(f".{ext}"):
+                        img_filename = f"{img_filename}.{ext}"
+                    
+                    img_path = attachments_dir / img_filename
+                    
+                    # Write image file
+                    with open(img_path, "wb") as f:
+                        f.write(b64_module.b64decode(b64_content))
+                    
+                    # Include path for agent to read
+                    message_content += f"\n\n📷 **Image attached:** `/app/data/attachments/{img_filename}`\nUse the Read tool to view this image."
+                except Exception as e:
+                    print(f"Failed to save image attachment: {e}")
+                    message_content += f"\n\n[Image attachment failed to save: {e}]"
             elif att_data:
                 # For text files, try to extract and embed the content
                 if att_data.startswith("data:") and ";base64," in att_data:
