@@ -1376,8 +1376,9 @@ async def add_comment(task_id: int, comment: CommentCreate):
                     )
                     print(f"📢 Spawned {matched_agent} for mention in task #{task_id}")
     
-    # If this is from User and task is active, try to reach the agent
-    if comment.agent == "User" and task_status in ["In Progress", "Review"]:
+    # If this is from User and task is active, try to reach the assigned agent
+    # BUT only if no explicit @mentions (if User tagged someone specific, don't auto-notify assignee)
+    if comment.agent == "User" and task_status in ["In Progress", "Review"] and not mentions:
         # Get the assigned agent for this task
         with get_db() as conn:
             row = conn.execute("SELECT agent FROM tasks WHERE id = ?", (task_id,)).fetchone()
@@ -1421,6 +1422,32 @@ Respond by posting a comment to the task."""
         await notify_OPENCLAW(task_id, task_title, comment.agent, comment.content)
     
     return result
+
+
+@app.delete("/api/tasks/{task_id}/comments/{comment_id}")
+async def delete_comment(task_id: int, comment_id: int):
+    """Delete a comment from a task (for cleaning up context or removing secrets)."""
+    with get_db() as conn:
+        # Verify comment exists and belongs to this task
+        row = conn.execute(
+            "SELECT id FROM comments WHERE id = ? AND task_id = ?",
+            (comment_id, task_id)
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Comment not found")
+        
+        conn.execute("DELETE FROM comments WHERE id = ?", (comment_id,))
+        conn.commit()
+    
+    # Broadcast deletion to all clients
+    await manager.broadcast({
+        "type": "comment_deleted",
+        "task_id": task_id,
+        "comment_id": comment_id
+    })
+    
+    return {"status": "deleted", "comment_id": comment_id}
+
 
 # =============================================================================
 # ACTION ITEMS (Questions, Notifications, Blockers)

@@ -8,7 +8,23 @@ A real-time Kanban board designed for **multi-agent AI workflows** with [OpenCla
 
 ## 📋 Changelog
 
-### v1.5.0 (2025-02-02)
+### v1.6.0 (2026-02-03)
+
+#### ✨ New Features
+- **Chat Message Actions** — Reply (↩), Copy (📋), and Delete (🗑) buttons on all messages
+- **Multi-Reply Support** — Reply to multiple messages at once with stacked previews
+- **Delete Comments API** — `DELETE /api/tasks/{id}/comments/{comment_id}` for removing messages
+
+#### 🔧 Improvements
+- **Larger Command Bar** — Chat window expanded from 600×400px to 720×500px
+- **Event Delegation** — All button handlers now use event delegation for reliability
+
+#### 🐛 Bug Fixes
+- Fixed reply button only working on user messages (selector mismatch)
+- Fixed @mention spawning assigned agent when only other agents were tagged
+- Fixed inline onclick handlers breaking on messages with special characters
+
+### v1.5.0 (2026-02-02)
 
 #### ✨ New Features
 - **Column Sorting** — Each column now has a sort dropdown with options:

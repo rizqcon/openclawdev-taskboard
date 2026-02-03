@@ -134,7 +134,7 @@
             top: 70px;
             left: 50%;
             transform: translateX(-50%);
-            width: 600px;
+            width: 720px;
             background: var(--bg-card);
             border: 2px solid var(--accent);
             border-radius: 12px;
@@ -164,7 +164,7 @@
         .jarvis-chat-container {
             display: flex;
             flex-direction: column;
-            height: 400px;
+            height: 500px;
             background: var(--bg-card);
             border-radius: 0 0 12px 12px;
         }
@@ -210,7 +210,66 @@
         }
         
         .jarvis-message .msg-content {
-            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        
+        /* Markdown styling for command bar chat */
+        .jarvis-message .msg-content p {
+            margin: 0 0 0.5rem 0;
+        }
+        .jarvis-message .msg-content p:last-child {
+            margin-bottom: 0;
+        }
+        .jarvis-message .msg-content ul,
+        .jarvis-message .msg-content ol {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        .jarvis-message .msg-content li {
+            margin: 0.25rem 0;
+        }
+        .jarvis-message .msg-content code {
+            background: var(--bg-dark);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        .jarvis-message .msg-content pre {
+            background: var(--bg-dark);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+        .jarvis-message .msg-content pre code {
+            background: none;
+            padding: 0;
+        }
+        .jarvis-message .msg-content blockquote {
+            border-left: 3px solid var(--accent);
+            margin: 0.5rem 0;
+            padding-left: 1rem;
+            color: var(--text-muted);
+        }
+        .jarvis-message .msg-content h1,
+        .jarvis-message .msg-content h2,
+        .jarvis-message .msg-content h3 {
+            margin: 0.75rem 0 0.5rem 0;
+            font-weight: 600;
+        }
+        .jarvis-message .msg-content h1 { font-size: 1.2em; }
+        .jarvis-message .msg-content h2 { font-size: 1.1em; }
+        .jarvis-message .msg-content h3 { font-size: 1em; }
+        .jarvis-message .msg-content strong {
+            font-weight: 600;
+        }
+        .jarvis-message .msg-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .jarvis-message .msg-content a:hover {
+            text-decoration: underline;
         }
         
         .jarvis-chat-input-area {
@@ -2067,16 +2126,23 @@
             gap: 0.25rem;
         }
         
+        .reply-preview-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
         .reply-preview {
             background: var(--bg-dark);
             border-left: 3px solid var(--accent);
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 0.5rem;
         }
         
         .reply-preview-text {
@@ -2084,6 +2150,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            flex: 1;
         }
         
         .reply-preview-close {
@@ -2091,7 +2158,28 @@
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .reply-preview-close:hover {
+            color: var(--danger, #dc3545);
+        }
+        
+        .reply-clear-all {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        
+        .reply-clear-all:hover {
+            background: var(--bg-dark);
         }
         
         .chat-message-content img {
@@ -3276,7 +3364,7 @@
             }
         }
         
-        let replyingTo = null; // Track which message we're replying to
+        let replyingTo = []; // Track which messages we're replying to (array for multi-reply)
         
         async function loadAndRenderComments(taskId) {
             const taskComments = await fetch(`${API}/api/tasks/${taskId}/comments`).then(r => r.json());
@@ -3296,8 +3384,9 @@
                             <div class="chat-message-header">
                                 <span class="agent">${escapeHtml(c.agent)}  -  <span class="time">${formatDateTime(c.created_at)}</span></span>
                                 <span class="msg-actions">
-                                    <button class="msg-action-btn" onclick="replyToMessage(${c.id}, '${escapeHtml(c.agent)}', '${escapeHtml(c.content.substring(0, 100)).replace(/'/g, "\\'")}...')" title="Reply">↩</button>
-                                    <button class="msg-action-btn" onclick="copyMessageContent(this.closest('.chat-message'))" title="Copy">📋</button>
+                                    <button class="msg-action-btn msg-reply-btn" data-msg-id="${c.id}" data-agent="${escapeHtml(c.agent)}" title="Reply">↩</button>
+                                    <button class="msg-action-btn msg-copy-btn" title="Copy">📋</button>
+                                    <button class="msg-action-btn msg-delete-btn" data-msg-id="${c.id}" title="Delete" style="color: var(--danger, #dc3545);">🗑</button>
                                 </span>
                             </div>
                             <div class="chat-message-content">${formatMessageContent(c.content)}</div>
@@ -3777,9 +3866,11 @@
                 content = content ? `${content}${fileHeader}${fileContent}` : `${fileHeader}${fileContent}`;
             }
             
-            // If replying to a message, prepend the quote
-            if (replyingTo) {
-                const quoteBlock = `> **↩ Reply to ${replyingTo.agent}:** ${replyingTo.preview}\n\n`;
+            // If replying to messages, prepend the quotes
+            if (replyingTo.length > 0) {
+                const quoteBlock = replyingTo.map(r => 
+                    `> **↩ Reply to ${r.agent}:** ${r.preview}`
+                ).join('\n') + '\n\n';
                 content = quoteBlock + content;
             }
             
@@ -3905,46 +3996,171 @@
             clearReplyPreview();
         }
         
-        // Reply to a specific message
+        // Reply to a specific message (supports multiple)
         function replyToMessage(msgId, agent, preview) {
-            replyingTo = { id: msgId, agent: agent, preview: preview };
+            // Check if already replying to this message
+            const existing = replyingTo.find(r => r.id === msgId);
+            if (existing) return; // Already added
             
-            // Show reply preview above input
-            const inputArea = document.querySelector('.chat-input-area');
-            let replyPreview = inputArea.querySelector('.reply-preview');
-            if (!replyPreview) {
-                replyPreview = document.createElement('div');
-                replyPreview.className = 'reply-preview';
-                inputArea.insertBefore(replyPreview, inputArea.firstChild);
-            }
-            replyPreview.innerHTML = `
-                <span class="reply-preview-text">↩ Replying to <strong>${agent}</strong>: ${preview}</span>
-                <button class="reply-preview-close" onclick="clearReplyPreview()">×</button>
-            `;
+            replyingTo.push({ id: msgId, agent: agent, preview: preview });
+            updateReplyPreview();
             
             // Focus the input
             document.getElementById('chatInput')?.focus();
         }
         
+        function removeReply(msgId) {
+            replyingTo = replyingTo.filter(r => r.id !== msgId);
+            updateReplyPreview();
+        }
+        
         function clearReplyPreview() {
-            replyingTo = null;
-            const replyPreview = document.querySelector('.chat-input-area .reply-preview');
-            if (replyPreview) replyPreview.remove();
+            replyingTo = [];
+            updateReplyPreview();
+        }
+        
+        function updateReplyPreview() {
+            const inputArea = document.querySelector('.chat-input-area');
+            if (!inputArea) {
+                console.warn('chat-input-area not found');
+                return;
+            }
+            
+            let replyPreview = inputArea.querySelector('.reply-preview-container');
+            
+            if (replyingTo.length === 0) {
+                if (replyPreview) replyPreview.remove();
+                return;
+            }
+            
+            if (!replyPreview) {
+                replyPreview = document.createElement('div');
+                replyPreview.className = 'reply-preview-container';
+                inputArea.insertBefore(replyPreview, inputArea.firstChild);
+            }
+            
+            replyPreview.innerHTML = replyingTo.map(r => `
+                <div class="reply-preview">
+                    <span class="reply-preview-text">↩ <strong>${r.agent}</strong>: ${r.preview}</span>
+                    <button class="reply-preview-close" onclick="removeReply(${r.id})">×</button>
+                </div>
+            `).join('') + (replyingTo.length > 0 ? `<button class="reply-clear-all" onclick="clearReplyPreview()">Clear all</button>` : '');
         }
         
         // Copy message content to clipboard
         function copyMessageContent(msgEl) {
             const content = msgEl.querySelector('.chat-message-content')?.innerText || '';
-            navigator.clipboard.writeText(content).then(() => {
-                // Show brief feedback
-                const btn = msgEl.querySelector('.msg-action-btn[title="Copy"]');
-                if (btn) {
-                    const original = btn.innerHTML;
-                    btn.innerHTML = '✓';
-                    setTimeout(() => btn.innerHTML = original, 1000);
-                }
-            });
+            if (!content) {
+                console.warn('No content to copy');
+                return;
+            }
+            
+            // Modern clipboard API with fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(content).then(() => {
+                    showCopyFeedback(msgEl.querySelector('.msg-copy-btn'));
+                }).catch(err => {
+                    console.error('Clipboard write failed:', err);
+                    fallbackCopy(content, msgEl.querySelector('.msg-copy-btn'));
+                });
+            } else {
+                fallbackCopy(content, msgEl.querySelector('.msg-copy-btn'));
+            }
         }
+        
+        // Fallback copy for non-secure contexts
+        function fallbackCopy(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showCopyFeedback(btn);
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                alert('Copy failed. Try selecting the text manually.');
+            }
+            document.body.removeChild(textarea);
+        }
+        
+        // Show visual feedback on copy button
+        function showCopyFeedback(btn) {
+            if (btn) {
+                const original = btn.innerHTML;
+                btn.innerHTML = '✓';
+                btn.style.color = 'var(--low, #22c55e)';
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.style.color = '';
+                }, 1000);
+            }
+        }
+        
+        // Delete message from chat
+        async function deleteMessage(msgId, msgEl) {
+            const taskId = document.getElementById('taskId')?.value;
+            if (!taskId || !msgId) {
+                console.error('Delete failed: missing taskId or msgId', { taskId, msgId });
+                return;
+            }
+            if (!confirm('Delete this message? This cannot be undone.')) return;
+            
+            try {
+                const resp = await fetch(`/api/tasks/${taskId}/comments/${msgId}`, {
+                    method: 'DELETE'
+                });
+                if (resp.ok) {
+                    msgEl.remove();
+                } else {
+                    const errData = await resp.text();
+                    console.error('Delete failed:', resp.status, errData);
+                    alert('Failed to delete message');
+                }
+            } catch (err) {
+                console.error('Delete message error:', err);
+                alert('Failed to delete message');
+            }
+        }
+        
+        // Event delegation for chat message action buttons (on document for reliability)
+        document.addEventListener('click', function(e) {
+            // Only handle clicks inside chat-messages container
+            const msgEl = e.target.closest('.chat-message');
+            if (!msgEl || !msgEl.closest('#chatMessages')) return;
+            
+            // Reply button
+            if (e.target.closest('.msg-reply-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const btn = e.target.closest('.msg-reply-btn');
+                const msgId = btn.dataset.msgId;
+                const agent = btn.dataset.agent;
+                const content = msgEl.querySelector('.chat-message-content')?.innerText || '';
+                const preview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
+                replyToMessage(parseInt(msgId), agent, preview);
+                return;
+            }
+            
+            // Copy button
+            if (e.target.closest('.msg-copy-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                copyMessageContent(msgEl);
+                return;
+            }
+            
+            // Delete button
+            if (e.target.closest('.msg-delete-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const btn = e.target.closest('.msg-delete-btn');
+                const msgId = btn.dataset.msgId;
+                deleteMessage(parseInt(msgId), msgEl);
+                return;
+            }
+        });
         
         // Export mode state
         let exportMode = false;
@@ -4223,6 +4439,15 @@
                         if (agent !== 'User') {
                             hideChatWorkingIndicator();
                         }
+                    }
+                }
+                
+                if (data.type === 'comment_deleted') {
+                    const openTaskId = document.getElementById('taskId').value;
+                    if (openTaskId && parseInt(openTaskId) === data.task_id) {
+                        // Remove the message element directly
+                        const msgEl = document.querySelector(`.chat-message[data-msg-id="${data.comment_id}"]`);
+                        if (msgEl) msgEl.remove();
                     }
                 }
                 
@@ -4955,8 +5180,9 @@
                             <div class="msg-header">
                                 <span>${icon} ${name}${msg.time ? '  -  ' + msg.time : ''}</span>
                                 <span class="msg-actions" style="margin-left:auto;">
-                                    <button class="msg-action-btn" onclick="replyToCommandBarMessage('${name}', '${preview}...')" title="Reply">↩</button>
-                                    <button class="msg-action-btn" onclick="copyCommandBarMessage(${idx})" title="Copy">📋</button>
+                                    <button class="msg-action-btn cmd-reply-btn" data-name="${name}" data-idx="${idx}" title="Reply">↩</button>
+                                    <button class="msg-action-btn cmd-copy-btn" data-idx="${idx}" title="Copy">📋</button>
+                                    <button class="msg-action-btn cmd-delete-btn" data-idx="${idx}" title="Delete" style="color: var(--danger, #dc3545);">🗑</button>
                                 </span>
                             </div>
                             <div class="msg-content">${formatMessageContent(msg.content || '')}${attachmentsHtml}</div>
@@ -4970,7 +5196,11 @@
         function replyToCommandBarMessage(name, preview) {
             commandBarReplyingTo = { name, preview };
             
-            const inputArea = document.querySelector('.command-chat-input-area');
+            const inputArea = document.querySelector('.jarvis-chat-input-area');
+            if (!inputArea) {
+                console.warn('jarvis-chat-input-area not found');
+                return;
+            }
             let replyPreview = inputArea.querySelector('.reply-preview');
             if (!replyPreview) {
                 replyPreview = document.createElement('div');
@@ -4986,20 +5216,81 @@
         
         function clearCommandBarReply() {
             commandBarReplyingTo = null;
-            const replyPreview = document.querySelector('.command-chat-input-area .reply-preview');
+            const replyPreview = document.querySelector('.jarvis-chat-input-area .reply-preview');
             if (replyPreview) replyPreview.remove();
         }
         
+        // Event delegation for command bar chat buttons (handles special chars in content)
+        document.addEventListener('click', function(e) {
+            const msgEl = e.target.closest('.jarvis-message');
+            if (!msgEl || !msgEl.closest('#jarvisChatMessages')) return;
+            
+            const idx = parseInt(msgEl.dataset.msgIdx);
+            
+            // Reply button
+            if (e.target.closest('.cmd-reply-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const btn = e.target.closest('.cmd-reply-btn');
+                const name = btn.dataset.name;
+                const content = jarvisChatHistory[idx]?.content || '';
+                const preview = content.substring(0, 80);
+                replyToCommandBarMessage(name, preview + '...');
+                return;
+            }
+            
+            // Copy button
+            if (e.target.closest('.cmd-copy-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                copyCommandBarMessage(idx);
+                return;
+            }
+            
+            // Delete button
+            if (e.target.closest('.cmd-delete-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteCommandBarMessage(idx);
+                return;
+            }
+        });
+        
         function copyCommandBarMessage(idx) {
             const content = jarvisChatHistory[idx]?.content || '';
-            navigator.clipboard.writeText(content).then(() => {
-                const btn = document.querySelector(`.jarvis-message[data-msg-idx="${idx}"] .msg-action-btn[title="Copy"]`);
-                if (btn) {
-                    const original = btn.innerHTML;
-                    btn.innerHTML = '✓';
-                    setTimeout(() => btn.innerHTML = original, 1000);
-                }
-            });
+            if (!content) {
+                console.warn('No content to copy');
+                return;
+            }
+            
+            const btn = document.querySelector(`.jarvis-message[data-msg-idx="${idx}"] .msg-action-btn[title="Copy"]`);
+            
+            // Modern clipboard API with fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(content).then(() => {
+                    showCopyFeedback(btn);
+                }).catch(err => {
+                    console.error('Clipboard write failed:', err);
+                    fallbackCopy(content, btn);
+                });
+            } else {
+                fallbackCopy(content, btn);
+            }
+        }
+        
+        function deleteCommandBarMessage(idx) {
+            if (!confirm('Delete this message? This cannot be undone.')) return;
+            
+            // Remove from history array
+            jarvisChatHistory.splice(idx, 1);
+            
+            // Also remove from session-specific history if exists
+            if (currentSessionKey && jarvisHistoryBySession[currentSessionKey]) {
+                jarvisHistoryBySession[currentSessionKey] = [...jarvisChatHistory];
+            }
+            
+            // Re-render the chat
+            renderJarvisChat();
         }
         
         function toggleCommandBarExportMode() {

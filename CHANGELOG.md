@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-02-03
+
+### Added
+- **Chat message actions**: Reply, copy, and delete buttons on all chat messages
+  - Reply (↩) — Shows preview above input, supports multi-reply (reply to multiple messages at once)
+  - Copy (📋) — Copies message content with fallback for non-HTTPS contexts
+  - Delete (🗑) — Removes message with confirmation (clears context or secrets)
+- **DELETE endpoint for comments**: `DELETE /api/tasks/{id}/comments/{comment_id}` with WebSocket broadcast
+- **Multi-reply support**: Click reply on multiple messages, each shows as stacked preview with "Clear all" button
+
+### Changed
+- **Command bar chat size**: Increased from 600×400px to 720×500px for better readability
+- **Event delegation**: All chat button handlers now use event delegation (fixes special character issues in message content)
+
+### Fixed
+- **Reply button on assistant messages**: Fixed selector mismatch (`.command-chat-input-area` vs `.jarvis-chat-input-area`)
+- **@Mention spawn logic**: Only explicitly @mentioned agents are spawned now — assigned agent no longer auto-spawns when other agents are tagged
+- **Inline onclick handlers**: Replaced with data attributes + event delegation to handle messages with quotes, newlines, and special characters
+
 ## [1.2.0] - 2026-02-02
 
 ### Added
