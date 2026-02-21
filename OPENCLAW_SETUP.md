@@ -114,18 +114,22 @@ The task board maps display names to OPENCLAW agent IDs:
 | Code Reviewer | `code-reviewer` |
 | UX Manager | `ux-manager` |
 
-### Customizing Agent IDs
+### Customizing Agents
 
-If your OPENCLAW uses different agent IDs, edit `app.py`:
+Agents are auto-detected from OpenClaw at startup. To override, use the `AGENTS` environment variable:
 
-```python
-AGENT_TO_OPENCLAW_ID = {
-    "OpenClaw": "main",
-    "Architect": "your-architect-id",
-    "Security Auditor": "your-security-id",
-    # ... etc
-}
+```env
+# Format: agent_id:Display Name (comma-separated)
+AGENTS=main:Jarvis,architect:Architect,security-auditor:Security Auditor,code-reviewer:Code Reviewer,ux-manager:UX Manager
+
+# Disable auto-detection (use AGENTS env or fallback defaults)
+AGENT_AUTO_DETECT=false
 ```
+
+Priority order:
+1. `AGENTS` env var (if set, always used)
+2. Auto-detect from OpenClaw API (if `AGENT_AUTO_DETECT=true` and `OPENCLAW_TOKEN` set)
+3. Hardcoded fallback defaults
 
 ---
 
@@ -180,7 +184,7 @@ COMMUNICATION:
 - Move to Review when done
 ```
 
-You can customize guardrails in `app.py` → `AGENT_GUARDRAILS`.
+You can customize guardrails in `app/openclaw.py` → `get_agent_guardrails()`.
 
 ---
 

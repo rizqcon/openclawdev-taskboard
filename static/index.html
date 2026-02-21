@@ -85,7 +85,7 @@
             align-items: center;
         }
         
-        /* Command Bar - Jarvis Chat */
+        /* Command Bar - Agent Chat */
         .command-bar {
             flex: 1;
             max-width: 600px;
@@ -156,12 +156,12 @@
             max-height: 95vh;
         }
         
-        .command-bar-expanded.fullsize .jarvis-chat-container {
+        .command-bar-expanded.fullsize .agent-chat-container {
             height: calc(95vh - 60px);
         }
         
-        /* Native Jarvis Chat Styles */
-        .jarvis-chat-container {
+        /* Native Agent Chat Styles */
+        .agent-chat-container {
             display: flex;
             flex-direction: column;
             height: 500px;
@@ -169,7 +169,7 @@
             border-radius: 0 0 12px 12px;
         }
         
-        .jarvis-chat-messages {
+        .agent-chat-messages {
             flex: 1;
             overflow-y: auto;
             padding: 1rem;
@@ -178,7 +178,7 @@
             gap: 0.75rem;
         }
         
-        .jarvis-message {
+        .agent-message {
             padding: 0.75rem 1rem;
             border-radius: 12px;
             max-width: 85%;
@@ -187,21 +187,21 @@
             word-wrap: break-word;
         }
         
-        .jarvis-message.user {
+        .agent-message.user {
             background: rgba(34, 197, 94, 0.15);
             border: 1px solid rgba(34, 197, 94, 0.3);
             align-self: flex-end;
             margin-left: 15%;
         }
         
-        .jarvis-message.assistant {
+        .agent-message.assistant {
             background: rgba(99, 102, 241, 0.15);
             border: 1px solid rgba(99, 102, 241, 0.3);
             align-self: flex-start;
             margin-right: 15%;
         }
         
-        .jarvis-message .msg-header {
+        .agent-message .msg-header {
             display: flex;
             justify-content: space-between;
             font-size: 0.75rem;
@@ -209,75 +209,75 @@
             margin-bottom: 0.25rem;
         }
         
-        .jarvis-message .msg-content {
+        .agent-message .msg-content {
             line-height: 1.6;
         }
         
         /* Markdown styling for command bar chat */
-        .jarvis-message .msg-content p {
+        .agent-message .msg-content p {
             margin: 0 0 0.5rem 0;
         }
-        .jarvis-message .msg-content p:last-child {
+        .agent-message .msg-content p:last-child {
             margin-bottom: 0;
         }
-        .jarvis-message .msg-content ul,
-        .jarvis-message .msg-content ol {
+        .agent-message .msg-content ul,
+        .agent-message .msg-content ol {
             margin: 0.5rem 0;
             padding-left: 1.5rem;
         }
-        .jarvis-message .msg-content li {
+        .agent-message .msg-content li {
             margin: 0.25rem 0;
         }
-        .jarvis-message .msg-content code {
+        .agent-message .msg-content code {
             background: var(--bg-dark);
             padding: 0.15rem 0.4rem;
             border-radius: 4px;
             font-size: 0.85em;
             font-family: 'Monaco', 'Menlo', monospace;
         }
-        .jarvis-message .msg-content pre {
+        .agent-message .msg-content pre {
             background: var(--bg-dark);
             padding: 0.75rem 1rem;
             border-radius: 6px;
             overflow-x: auto;
             margin: 0.5rem 0;
         }
-        .jarvis-message .msg-content pre code {
+        .agent-message .msg-content pre code {
             background: none;
             padding: 0;
         }
-        .jarvis-message .msg-content blockquote {
+        .agent-message .msg-content blockquote {
             border-left: 3px solid var(--accent);
             margin: 0.5rem 0;
             padding-left: 1rem;
             color: var(--text-muted);
         }
-        .jarvis-message .msg-content h1,
-        .jarvis-message .msg-content h2,
-        .jarvis-message .msg-content h3 {
+        .agent-message .msg-content h1,
+        .agent-message .msg-content h2,
+        .agent-message .msg-content h3 {
             margin: 0.75rem 0 0.5rem 0;
             font-weight: 600;
         }
-        .jarvis-message .msg-content h1 { font-size: 1.2em; }
-        .jarvis-message .msg-content h2 { font-size: 1.1em; }
-        .jarvis-message .msg-content h3 { font-size: 1em; }
-        .jarvis-message .msg-content strong {
+        .agent-message .msg-content h1 { font-size: 1.2em; }
+        .agent-message .msg-content h2 { font-size: 1.1em; }
+        .agent-message .msg-content h3 { font-size: 1em; }
+        .agent-message .msg-content strong {
             font-weight: 600;
         }
-        .jarvis-message .msg-content a {
+        .agent-message .msg-content a {
             color: var(--accent);
             text-decoration: none;
         }
-        .jarvis-message .msg-content a:hover {
+        .agent-message .msg-content a:hover {
             text-decoration: underline;
         }
         
-        .jarvis-chat-input-area {
+        .agent-chat-input-area {
             padding: 0.75rem 1rem 1rem;
             border-top: 1px solid var(--border);
         }
         
-        .jarvis-typing-indicator {
+        .agent-typing-indicator {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -302,13 +302,13 @@
             30% { opacity: 1; transform: scale(1.2); }
         }
         
-        .jarvis-input-row {
+        .agent-input-row {
             display: flex;
             gap: 0.5rem;
             align-items: flex-end;
         }
         
-        .jarvis-chat-input {
+        .agent-chat-input {
             flex: 1;
             padding: 0.625rem 1rem;
             border: 1px solid var(--border);
@@ -327,25 +327,25 @@
             scrollbar-color: var(--border) transparent;
         }
         
-        .jarvis-chat-input::-webkit-scrollbar {
+        .agent-chat-input::-webkit-scrollbar {
             width: 6px;
         }
         
-        .jarvis-chat-input::-webkit-scrollbar-track {
+        .agent-chat-input::-webkit-scrollbar-track {
             background: transparent;
         }
         
-        .jarvis-chat-input::-webkit-scrollbar-thumb {
+        .agent-chat-input::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 3px;
         }
         
-        .jarvis-chat-input:focus {
+        .agent-chat-input:focus {
             outline: none;
             border-color: var(--accent);
         }
         
-        .jarvis-send-btn {
+        .agent-send-btn {
             height: 44px;
             min-width: 44px;
             padding: 0 1rem;
@@ -361,11 +361,11 @@
             justify-content: center;
         }
         
-        .jarvis-send-btn:hover {
+        .agent-send-btn:hover {
             background: #5855eb;
         }
         
-        .jarvis-send-btn:disabled {
+        .agent-send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
@@ -393,7 +393,7 @@
             align-self: flex-end;
         }
         
-        .command-chat-message.from-Jarvis {
+        .command-chat-message.from-assistant {
             background: rgba(99, 102, 241, 0.15);
             border-left: 3px solid #6366f1;
             align-self: flex-start;
@@ -1017,6 +1017,126 @@
             border-radius: 6px;
             font-size: 0.875rem;
         }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 2rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+        .filter-bar select, .filter-bar input {
+            background: var(--bg-dark);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        .filter-bar input::placeholder { color: var(--text-muted); }
+        .filter-bar select:focus, .filter-bar input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Project badge on cards */
+        .project-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            color: white;
+            opacity: 0.85;
+        }
+
+        /* Project Manager modal */
+        .pm-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .pm-modal-overlay.active { display: flex; }
+        .pm-modal {
+            background: var(--bg-card);
+            border-radius: 12px;
+            width: 420px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .pm-modal-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pm-modal-header h3 { font-size: 1.1rem; }
+        .pm-modal-body {
+            padding: 1rem 1.25rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .pm-project-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(51,65,85,0.5);
+        }
+        .pm-color-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .pm-project-name { flex: 1; font-size: 0.9rem; }
+        .pm-delete-btn {
+            background: none; border: none; color: var(--critical);
+            cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px;
+        }
+        .pm-delete-btn:hover { background: rgba(239,68,68,0.15); }
+        .pm-delete-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .pm-add-form {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .pm-add-form input, .pm-add-form textarea {
+            background: var(--bg-dark);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .pm-add-form textarea { resize: vertical; min-height: 40px; }
+        .pm-add-row {
+            display: flex; gap: 0.5rem; align-items: center;
+        }
+        .pm-add-row input[type="color"] {
+            width: 32px; height: 32px; border: none; padding: 0;
+            border-radius: 4px; cursor: pointer; background: none;
+        }
+        .pm-add-btn {
+            background: var(--accent); color: white; border: none;
+            padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .pm-add-btn:hover { background: var(--accent-hover); }
+        .pm-manage-link {
+            background: none; border: none; color: var(--text-muted);
+            cursor: pointer; font-size: 0.75rem; text-decoration: underline;
+            padding: 0;
+        }
+        .pm-manage-link:hover { color: var(--accent); }
         
         /* Agent Legend */
         .agent-legend {
@@ -1058,12 +1178,12 @@
             padding: 1.5rem;
             overflow-x: auto;
             overflow-y: hidden;
-            height: calc(100vh - 73px);
+            height: calc(100vh - 113px);
         }
         
         .column {
-            flex: 1 0 300px;
-            min-width: 300px;
+            flex: 1 0 250px;
+            min-width: 250px;
             background: var(--bg-column);
             border-radius: 8px;
             display: flex;
@@ -1161,15 +1281,7 @@
         .tag.priority-Medium { background: var(--medium); color: black; }
         .tag.priority-Low { background: var(--low); color: white; }
         
-        /* Agent colors */
-        .tag.agent-Jarvis { background: #6366f1; color: white; }
-        .tag.agent-Jarvis { background: #0ea5e9; color: white; }
-        .tag.agent-Architect { background: #8b5cf6; color: white; }
-        .tag.agent-Security-Auditor { background: #ef4444; color: white; }
-        .tag.agent-Code-Reviewer { background: #14b8a6; color: white; }
-        .tag.agent-UX-Manager { background: #ec4899; color: white; }
-        .tag.agent-User { background: #22c55e; color: white; }
-        .tag.agent-Unassigned { background: #64748b; color: white; }
+        /* Agent colors are injected dynamically from config.agentMeta */
         
         /* Notification bubble */
         .notification-bubble {
@@ -1256,8 +1368,8 @@
             text-decoration: line-through;
         }
         .action-item.resolved .action-item-check {
-            background: var(--text-muted);
-            border-color: var(--text-muted);
+            background: #10b981;
+            border-color: #10b981;
             cursor: pointer;
         }
         .action-item.resolved .action-item-check:hover {
@@ -1535,8 +1647,8 @@
             background: var(--bg-card);
             border-radius: 16px;
             width: 100%;
-            max-width: 600px;
-            min-height: 500px;
+            max-width: 720px;
+            min-height: 700px;
             max-height: 90vh;
             overflow: hidden;
             display: flex;
@@ -1661,12 +1773,18 @@
         }
         
         .header-save-btn.saved {
-            animation: saveGlow 0.6s ease-out;
+            animation: saveGlow 1.2s ease-out;
+            background: rgba(34, 197, 94, 0.2);
         }
-        
+
         .header-save-btn.saved .save-icon {
             display: block !important;
-            stroke: var(--success);
+            stroke: #fff;
+            filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.8));
+        }
+
+        .header-save-btn.saved .save-spinner {
+            display: none !important;
         }
         
         @keyframes saveGlow {
@@ -1963,29 +2081,9 @@
             border-left: 3px solid var(--border);
         }
         
-        .chat-message.from-jarvis {
+        .chat-message.from-assistant {
             background: rgba(99, 102, 241, 0.15);
             border-left: 3px solid #6366f1;
-        }
-        
-        .chat-message.from-architect {
-            background: rgba(168, 85, 247, 0.15);
-            border-left: 3px solid #a855f7;
-        }
-        
-        .chat-message.from-security-auditor {
-            background: rgba(239, 68, 68, 0.15);
-            border-left: 3px solid #ef4444;
-        }
-        
-        .chat-message.from-code-reviewer {
-            background: rgba(34, 197, 94, 0.15);
-            border-left: 3px solid #22c55e;
-        }
-        
-        .chat-message.from-ux-manager {
-            background: rgba(236, 72, 153, 0.15);
-            border-left: 3px solid #ec4899;
         }
         
         .chat-message.from-system {
@@ -2019,11 +2117,6 @@
             color: var(--accent);
         }
         
-        .chat-message.from-jarvis .chat-message-header .agent { color: #6366f1; }
-        .chat-message.from-architect .chat-message-header .agent { color: #a855f7; }
-        .chat-message.from-security-auditor .chat-message-header .agent { color: #ef4444; }
-        .chat-message.from-code-reviewer .chat-message-header .agent { color: #22c55e; }
-        .chat-message.from-ux-manager .chat-message-header .agent { color: #ec4899; }
         .chat-message.from-system .chat-message-header .agent { color: #64748b; }
         
         .chat-message-header .time {
@@ -2087,7 +2180,7 @@
         }
         
         /* Command bar chat message structure */
-        .jarvis-message {
+        .agent-message {
             display: flex;
             align-items: flex-start;
             gap: 0.5rem;
@@ -2110,18 +2203,18 @@
             accent-color: var(--accent);
         }
         
-        .jarvis-message-body {
+        .agent-message-body {
             flex: 1;
             min-width: 0;
         }
         
-        .jarvis-message .msg-header {
+        .agent-message .msg-header {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .jarvis-message .msg-actions {
+        .agent-message .msg-actions {
             display: flex;
             gap: 0.25rem;
         }
@@ -2598,6 +2691,117 @@
         .chat-input-wrapper {
             position: relative;
         }
+
+        /* ── Responsive: Tablet (max-width: 768px) ── */
+        @media (max-width: 768px) {
+            .board {
+                flex-wrap: wrap;
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: auto;
+                min-height: calc(100vh - 113px);
+            }
+            .column {
+                flex: 1 1 calc(50% - 0.5rem);
+                min-width: calc(50% - 0.5rem);
+                max-height: none;
+            }
+            .filter-bar {
+                flex-wrap: wrap;
+            }
+            .modal {
+                width: 95vw;
+                max-width: none;
+            }
+            .command-bar-expanded {
+                width: 95vw;
+                max-width: 95vw;
+            }
+        }
+
+        /* ── Responsive: Mobile (max-width: 480px) ── */
+        @media (max-width: 480px) {
+            .header {
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .command-bar {
+                max-width: none;
+                margin: 0;
+                width: 100%;
+            }
+            #projectSwitcher {
+                width: 100%;
+            }
+            .board {
+                flex-wrap: nowrap;
+                flex-direction: column;
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: auto;
+                min-height: calc(100vh - 150px);
+                padding: 1rem;
+            }
+            .column {
+                flex: 0 0 auto;
+                min-width: 100%;
+                width: 100%;
+                max-height: none;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.5rem 1rem;
+            }
+            .modal {
+                width: 100vw;
+                height: 100vh;
+                max-width: none;
+                max-height: none;
+                min-height: 100vh;
+                border-radius: 0;
+            }
+            .modal.theater-mode {
+                width: 100vw;
+                height: 100vh;
+                max-width: none;
+                max-height: none;
+                margin: 0;
+                border-radius: 0;
+            }
+            .modal-header {
+                border-radius: 0;
+            }
+            .modal-overlay {
+                padding: 0;
+            }
+            .theater-mode .modal-body {
+                flex-direction: column;
+            }
+            .command-bar-expanded {
+                width: 100vw;
+                max-width: 100vw;
+                height: 100vh;
+                max-height: 100vh;
+                top: 0;
+                left: 0;
+                transform: none;
+                border-radius: 0;
+            }
+            .command-bar-expanded.fullsize {
+                top: 0;
+                left: 0;
+                transform: none;
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2608,10 +2812,10 @@
         <div class="command-bar" id="commandBar" onclick="expandCommandBar()">
             <div class="command-bar-collapsed" id="commandBarCollapsed">
                 <span class="command-bar-icon" id="commandBarIcon">🛡️</span>
-                <span class="thinking-indicator-collapsed" id="jarvisThinkingCollapsed" style="display: none;" title="Jarvis is thinking...">
+                <span class="thinking-indicator-collapsed" id="agentThinkingCollapsed" style="display: none;" title="Agent is thinking...">
                     <span class="thinking-pulse"></span>
                 </span>
-                <span class="command-bar-preview" id="commandBarPreview">Ask Jarvis anything...</span>
+                <span class="command-bar-preview" id="commandBarPreview">Ask Agent anything...</span>
                 <button class="stop-icon-btn" id="stopAllBtn" onclick="event.stopPropagation(); stopAllAgents()" title="Stop all agents">■</button>
             </div>
             <div class="command-bar-expanded" id="commandBarExpanded">
@@ -2619,39 +2823,39 @@
                     <div class="command-header-title">
                         <div class="session-selector-wrapper">
                             <select id="sessionSelector" class="session-selector" onchange="switchSession(this.value)" onclick="event.stopPropagation()">
-                                <option value="main">Jarvis (Main)</option>
+                                <option value="main">Agent (Main)</option>
                             </select>
                             <button class="session-action-btn danger" id="deleteSessionBtn" onclick="event.stopPropagation(); deleteCurrentSession()" title="Close this session">×</button>
                         </div>
                         <button class="new-session-btn" onclick="event.stopPropagation(); createNewSession()" title="New session">+ New</button>
                     </div>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <span class="thinking-indicator" id="jarvisThinking" style="display: none;"><span class="ai-working-dot"></span><span class="ai-working-icon">🛡️</span></span>
+                        <span class="thinking-indicator" id="agentThinking" style="display: none;"><span class="ai-working-dot"></span><span class="ai-working-icon">🛡️</span></span>
                         <button class="stop-btn" id="stopSessionBtn" onclick="event.stopPropagation(); stopCurrentSession()" title="Stop this session">■</button>
                         <button class="command-action-btn" onclick="event.stopPropagation(); toggleCommandBarExportMode()" title="Export to MD">📥</button>
                         <button class="command-expand-btn" onclick="event.stopPropagation(); toggleCommandFullsize()" title="Fullscreen" id="commandExpandBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><polyline points="21 3 14 10"/><polyline points="3 21 10 14"/></svg></button>
                         <button class="command-close-btn" onclick="event.stopPropagation(); collapseCommandBar()">×</button>
                     </div>
                 </div>
-                <!-- Native Jarvis Chat - v1.8 -->
-                <div class="jarvis-chat-container" id="jarvisChatContainer">
-                    <div class="jarvis-chat-messages" id="jarvisChatMessages">
+                <!-- Native Agent Chat - v1.8 -->
+                <div class="agent-chat-container" id="agentChatContainer">
+                    <div class="agent-chat-messages" id="agentChatMessages">
                         <!-- Messages rendered here -->
                     </div>
-                    <div class="jarvis-chat-input-area">
+                    <div class="agent-chat-input-area">
                         <div class="command-paste-preview" id="commandPastePreview"></div>
-                        <div class="jarvis-input-row">
+                        <div class="agent-input-row">
                             <button class="attach-btn" onclick="document.getElementById('commandFileInput').click()" title="Attach file">📎</button>
                             <input type="file" id="commandFileInput" class="file-input" accept="image/*,.pdf,.txt,.md,.json,.csv" onchange="handleCommandFileSelect(event)" multiple>
                             <textarea 
-                                id="jarvisChatInput" 
-                                class="jarvis-chat-input" 
+                                id="agentChatInput" 
+                                class="agent-chat-input" 
                                 placeholder="Ctrl+V to paste images · Shift+Enter for new line"
                                 rows="1"
-                                onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendJarvisMessage(); }"
+                                onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); }"
                                 oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 150) + 'px';"
                             ></textarea>
-                            <button class="jarvis-send-btn" onclick="sendJarvisMessage()" id="jarvisSendBtn">
+                            <button class="agent-send-btn" onclick="sendChatMessage()" id="agentSendBtn">
                                 <span>→</span>
                             </button>
                         </div>
@@ -2662,15 +2866,52 @@
         
         <div class="header-actions">
             <div class="agent-legend" id="agentLegend"></div>
-            <select class="filter-select" id="filterAgent">
-                <option value="">All Agents</option>
-            </select>
+            <button class="btn" onclick="openProjectManager()">Projects</button>
             <button class="btn" onclick="openNewTaskModal()">+ New Task</button>
             <button class="help-btn" onclick="openHelpModal()" title="Help"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
         </div>
     </header>
-    
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" id="filterBar">
+        <select class="filter-select" id="projectSwitcher" onchange="onProjectSwitch(this.value)">
+            <option value="all">All Projects</option>
+        </select>
+        <select id="filterPriority" onchange="renderBoard()">
+            <option value="">All Priorities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+        <select id="filterAgent" onchange="renderBoard()">
+            <option value="">All Agents</option>
+        </select>
+        <input type="text" id="filterSearch" placeholder="Search title/description..." oninput="renderBoard()" style="flex:1; max-width:300px;">
+    </div>
+
     <div class="board" id="board"></div>
+
+    <!-- Project Manager Modal -->
+    <div class="pm-modal-overlay" id="projectManagerModal" onclick="if(event.target===this)closeProjectManager()">
+        <div class="pm-modal">
+            <div class="pm-modal-header">
+                <h3>Manage Projects</h3>
+                <button style="background:none;border:none;color:var(--text);font-size:1.2rem;cursor:pointer;" onclick="closeProjectManager()">&times;</button>
+            </div>
+            <div class="pm-modal-body">
+                <div id="pmProjectList"></div>
+                <div class="pm-add-form">
+                    <div class="pm-add-row">
+                        <input type="text" id="pmNewName" placeholder="Project name" style="flex:1;">
+                        <input type="color" id="pmNewColor" value="#6366f1">
+                    </div>
+                    <input type="text" id="pmNewDesc" placeholder="Description (optional)">
+                    <button class="pm-add-btn" onclick="addProject()">Add Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Command Bar Overlay -->
     <div class="command-bar-overlay" id="commandBarOverlay" onclick="collapseCommandBar()"></div>
@@ -2717,11 +2958,12 @@
     </div>
     
     <!-- Task Modal -->
-    <div class="modal-overlay" id="taskModal">
+    <div class="modal-overlay" id="taskModal" onclick="if(event.target===this){autoSaveTaskField();closeModal()}">
         <div class="modal" id="modalContainer">
             <div class="modal-header">
                 <input type="text" id="taskTitleInput" class="modal-title-input" required placeholder="Task title..." form="taskForm">
                 <div class="modal-header-actions">
+                    <button onclick="exportTaskMarkdown()" title="Export MD" id="headerExportBtn" class="header-export-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 15l3 3 3-3"/><path d="M12 12v6"/></svg></button>
                     <button onclick="confirmDeleteTask()" title="Delete Task" id="headerDeleteBtn" class="header-delete-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
                     <button onclick="saveTaskFromHeader()" title="Save Changes" id="headerSaveBtn" class="header-save-btn">
                         <svg class="save-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
@@ -2740,26 +2982,34 @@
                         
                         <div class="form-group" style="margin-bottom: 1.25rem;">
                             <label>Description</label>
-                            <textarea id="taskDescription" rows="3" placeholder="Add a description..."></textarea>
+                            <textarea id="taskDescription" rows="8" placeholder="Add a description..." onblur="autoSaveTaskField()"></textarea>
                         </div>
                         
-                        <div class="form-row" style="margin-bottom: 0;">
+                        <div class="form-row" style="margin-bottom: 0.5rem;">
+                            <div class="form-group">
+                                <label>Project</label>
+                                <select id="taskProject" onchange="autoSaveTaskField()"></select>
+                            </div>
                             <div class="form-group">
                                 <label>Status</label>
-                                <select id="taskStatus"></select>
+                                <select id="taskStatus" onchange="autoSaveTaskField()"></select>
                             </div>
                             <div class="form-group">
                                 <label>Priority</label>
-                                <select id="taskPriority"></select>
+                                <select id="taskPriority" onchange="autoSaveTaskField()"></select>
                             </div>
+
+                        </div>
+                        <div class="form-row" style="margin-bottom: 0;">
                             <div class="form-group">
                                 <label>Assigned To</label>
-                                <select id="taskAgent"></select>
+                                <select id="taskAgent" onchange="autoSaveTaskField()"></select>
                             </div>
                             <div class="form-group">
                                 <label>Due Date</label>
-                                <input type="date" id="taskDueDate">
+                                <input type="date" id="taskDueDate" onchange="autoSaveTaskField()">
                             </div>
+
                         </div>
                         
                         <div id="sourceInfo" style="display:none; margin-top: 0.75rem; padding: 0.5rem; background: var(--bg-dark); border-radius: 6px; font-size: 0.75rem;">
@@ -2779,10 +3029,22 @@
                                 <span class="action-items-count" id="actionItemsCount"></span>
                             </div>
                             <div class="action-items-header-right">
+                                <button class="action-items-archive-toggle" onclick="event.stopPropagation(); toggleAddActionItem()" title="Add action item">+ Add</button>
                                 <button class="action-items-archive-toggle" id="archiveToggleBtn" onclick="event.stopPropagation(); toggleArchiveView()" title="View archived items">📦 Archive</button>
                             </div>
                         </div>
                         <div class="action-items-content" id="actionItemsContent">
+                            <div id="addActionItemForm" style="display:none; margin-bottom: 0.5rem;">
+                                <div style="display:flex; gap:0.5rem; align-items:center;">
+                                    <select id="newActionItemType" style="padding:0.3rem; border-radius:4px; background:var(--bg-dark); color:var(--text); border:1px solid var(--border); font-size:0.8rem;">
+                                        <option value="question">Question</option>
+                                        <option value="blocker">Blocker</option>
+                                        <option value="completion">Completion</option>
+                                    </select>
+                                    <input type="text" id="newActionItemContent" placeholder="Action item text..." style="flex:1; padding:0.3rem 0.5rem; border-radius:4px; background:var(--bg-dark); color:var(--text); border:1px solid var(--border); font-size:0.8rem;" onkeydown="if(event.key==='Enter')submitNewActionItem()">
+                                    <button class="btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="submitNewActionItem()">Add</button>
+                                </div>
+                            </div>
                             <div id="actionItemsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
                             <div id="archiveViewer" class="archive-viewer" style="display: none;">
                                 <div class="archive-viewer-header">
@@ -2806,7 +3068,7 @@
                             <div class="chat-working-indicator" id="chatWorkingIndicator" style="display: none;" title="">
                                 <div id="chatWorkingAgents" style="display: flex; gap: 0.25rem; align-items: center;"></div>
                             </div>
-                            <button class="stop-btn-mini" id="stopAgentBtn" onclick="stopTaskAgent()" title="Stop agent">■</button>
+                            <button class="stop-btn-mini" id="stopAgentBtn" onclick="toggleTaskAgent()" title="Start agent">▶</button>
                             <button class="btn btn-secondary" onclick="toggleExportMode()" title="Export to MD" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">📥</button>
                             <button class="btn btn-secondary" onclick="toggleTaskDetails()" id="toggleDetailsBtn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Hide Details</button>
                         </div>
@@ -2857,19 +3119,13 @@
         let columnSortMode = {}; // status -> sort mode (latest|priority|agent|custom)
         let customSortOrder = {}; // status -> array of task IDs in custom order
         let pastedImages = []; // Array for multiple images
+        let currentProjectId = 'all'; // Project filter: 'all' or numeric id
         let theaterMode = false;
         let detailsVisible = true;
         
-        // Agent icons mapping (main agent added dynamically from config)
-        window.AGENT_ICONS = {
-            'Architect': '🏛️',
-            'Security Auditor': '🔒',
-            'Code Reviewer': '📋',
-            'UX Manager': '🎨',
-            'User': '👤',
-            'Unassigned': '○'
-        };
-        
+        // Agent icons mapping (populated from config.agentMeta at startup)
+        window.AGENT_ICONS = {};
+
         function getAgentIcon(agent) {
             return window.AGENT_ICONS[agent] || '○';
         }
@@ -2926,7 +3182,7 @@
             setupCommandPasteHandler();
             // Pre-load sessions and chat history so it's ready when command bar opens
             loadSessions();
-            loadJarvisHistory('main');
+            loadChatHistory('main');
         }
         
         function applyBranding() {
@@ -2944,7 +3200,7 @@
             const preview = document.getElementById('commandBarPreview');
             if (preview) preview.textContent = `Ask ${mainAgent} anything...`;
             
-            const chatInput = document.getElementById('jarvisChatInput');
+            const chatInput = document.getElementById('agentChatInput');
             if (chatInput) chatInput.placeholder = `Ctrl+V to paste images · Shift+Enter for new line`;
             
             // Update typing indicator
@@ -2957,14 +3213,32 @@
                 sessionSelector.options[0].textContent = `${mainAgent} (Main)`;
             }
             
-            // Update AGENT_ICONS with main agent (used by cards and legend)
-            if (window.AGENT_ICONS) {
+            // Populate AGENT_ICONS from agentMeta (dynamic from OpenClaw)
+            if (config.agentMeta) {
+                window.AGENT_ICONS = {};
+                window.AGENT_ICONS_MAP = {};
+                for (const [name, meta] of Object.entries(config.agentMeta)) {
+                    AGENT_ICONS[name] = meta.icon || '○';
+                    if (name !== 'User' && name !== 'Unassigned') {
+                        AGENT_ICONS_MAP[name] = meta.icon || '○';
+                    }
+                }
+                // Inject dynamic CSS for agent colors
+                let agentStyles = '';
+                for (const [name, meta] of Object.entries(config.agentMeta)) {
+                    const cssName = name.replace(/\s+/g, '-');
+                    agentStyles += `.tag.agent-${cssName} { background: ${meta.color || '#64748b'}; color: white; }\n`;
+                }
+                let styleEl = document.getElementById('dynamic-agent-styles');
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = 'dynamic-agent-styles';
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = agentStyles;
+            } else {
+                // Fallback: set main agent icon
                 AGENT_ICONS[mainAgent] = mainEmoji;
-            }
-            
-            // Update AGENT_ICONS_MAP with main agent (used by mention dropdown)
-            if (window.AGENT_ICONS_MAP) {
-                AGENT_ICONS_MAP[mainAgent] = mainEmoji;
             }
             
             // Store branding globally for use elsewhere
@@ -2976,34 +3250,65 @@
             config.agents.forEach(a => {
                 filterAgent.innerHTML += `<option value="${a}">${getAgentIcon(a)} ${a}</option>`;
             });
-            
+
             // Populate legend (skip Unassigned)
             const legend = document.getElementById('agentLegend');
             config.agents.filter(a => a !== 'Unassigned').forEach(a => {
                 legend.innerHTML += `<div class="legend-item" title="${a}"><span class="icon">${getAgentIcon(a)}</span><span class="name">${a}</span></div>`;
             });
-            
+
             const statusSelect = document.getElementById('taskStatus');
             const prioritySelect = document.getElementById('taskPriority');
             const agentSelect = document.getElementById('taskAgent');
-            
+
             config.statuses.forEach(s => {
                 statusSelect.innerHTML += `<option value="${s}">${s}</option>`;
             });
-            
+
             config.priorities.forEach(p => {
                 prioritySelect.innerHTML += `<option value="${p}">${p}</option>`;
             });
-            
+
             config.agents.forEach(a => {
                 agentSelect.innerHTML += `<option value="${a}">${getAgentIcon(a)} ${a}</option>`;
             });
+
+            // Populate project select in task form
+            const taskProjectSelect = document.getElementById('taskProject');
+            if (taskProjectSelect && config.projects) {
+                taskProjectSelect.innerHTML = '';
+                config.projects.forEach(p => {
+                    taskProjectSelect.innerHTML += `<option value="${p.id}">${escapeHtml(p.name)}</option>`;
+                });
+            }
+
+            // Populate project switcher
+            populateProjectSwitcher();
+        }
+
+        function populateProjectSwitcher() {
+            const switcher = document.getElementById('projectSwitcher');
+            const current = switcher.value;
+            switcher.innerHTML = '<option value="all">All Projects</option>';
+            (config.projects || []).forEach(p => {
+                switcher.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+            });
+            switcher.value = current;
+            // Restore if value was removed
+            if (switcher.value !== current) switcher.value = 'all';
+        }
+
+        function onProjectSwitch(val) {
+            currentProjectId = val;
+            renderBoard();
+        }
+
+        function getProjectById(id) {
+            return (config.projects || []).find(p => p.id === parseInt(id));
         }
         
         async function loadTasks() {
-            const agent = document.getElementById('filterAgent').value;
-            const url = agent ? `${API}/api/tasks?agent=${agent}` : `${API}/api/tasks`;
-            tasks = await fetch(url).then(r => r.json());
+            tasks = await fetch(`${API}/api/tasks`).then(r => r.json());
             
             // Load comments and action items
             for (const task of tasks) {
@@ -3014,12 +3319,34 @@
             }
         }
         
+        function applyFilters(taskList) {
+            let filtered = taskList;
+            // Project filter
+            if (currentProjectId !== 'all') {
+                filtered = filtered.filter(t => String(t.project_id) === String(currentProjectId));
+            }
+            // Priority filter
+            const pf = document.getElementById('filterPriority')?.value;
+            if (pf) filtered = filtered.filter(t => t.priority === pf);
+            // Agent filter
+            const af = document.getElementById('filterAgent')?.value;
+            if (af) filtered = filtered.filter(t => t.agent === af);
+            // Search filter
+            const sf = (document.getElementById('filterSearch')?.value || '').toLowerCase();
+            if (sf) filtered = filtered.filter(t =>
+                (t.title || '').toLowerCase().includes(sf) ||
+                (t.description || '').toLowerCase().includes(sf)
+            );
+            return filtered;
+        }
+
         function renderBoard() {
             const board = document.getElementById('board');
             board.innerHTML = '';
-            
+            const filteredTasks = applyFilters(tasks);
+
             config.statuses.forEach(status => {
-                let statusTasks = tasks.filter(t => t.status === status);
+                let statusTasks = filteredTasks.filter(t => t.status === status);
                 const sortMode = columnSortMode[status] || 'latest';
                 
                 // Apply sorting
@@ -3120,9 +3447,18 @@
                   ).join('')}</div>` 
                 : '';
             
+            // Project badge (only when viewing all projects)
+            let projectBadgeHtml = '';
+            if (currentProjectId === 'all' && task.project_id) {
+                const proj = getProjectById(task.project_id);
+                if (proj) {
+                    projectBadgeHtml = `<span class="project-badge" style="background:${proj.color || '#6366f1'}">${escapeHtml(proj.name)}</span>`;
+                }
+            }
+
             return `
-                <div class="card" 
-                     draggable="true" 
+                <div class="card"
+                     draggable="true"
                      ondragstart="handleDragStart(event, ${task.id})"
                      ondragend="handleDragEnd(event)"
                      ondragover="handleCardDragOver(event, ${task.id})"
@@ -3132,6 +3468,7 @@
                     ${aiWorkingHtml}
                     <div class="card-title">${escapeHtml(task.title)}</div>
                     <div class="card-meta">
+                        ${projectBadgeHtml}
                         <span class="tag priority-${task.priority}">${task.priority}</span>
                         <span class="tag agent-${task.agent.replace(/\s+/g, '-')}">${task.agent}</span>
                         ${task.due_date ? `<span class="tag">${task.due_date}</span>` : ''}
@@ -3274,7 +3611,8 @@
             document.getElementById('taskPriority').value = 'Medium';
             document.getElementById('taskAgent').value = 'Unassigned';
             document.getElementById('taskDueDate').value = '';
-            
+            document.getElementById('taskProject').value = currentProjectId !== 'all' ? currentProjectId : '1';
+
             // Hide elements not relevant for new tasks
             document.getElementById('headerDeleteBtn').style.display = 'none';
             document.getElementById('theaterBtn').style.display = 'none';
@@ -3309,6 +3647,7 @@
             document.getElementById('taskPriority').value = task.priority;
             document.getElementById('taskAgent').value = task.agent;
             document.getElementById('taskDueDate').value = task.due_date || '';
+            document.getElementById('taskProject').value = task.project_id || '1';
             document.getElementById('headerDeleteBtn').style.display = '';
             document.getElementById('theaterBtn').style.display = '';
             document.getElementById('chatSection').style.display = 'block';
@@ -3328,11 +3667,8 @@
                 sourceInfo.style.display = 'none';
             }
             
-            // Update stop button tooltip with agent name if known
-            const stopAgentBtn = document.getElementById('stopAgentBtn');
-            stopAgentBtn.title = task.working_agent ? `Stop ${task.working_agent}` : 'Stop agent';
-            
-            // Show working indicator if agent is currently working
+            // Update toggle button state based on working agent
+            updateAgentToggleButton(!!task.working_agent, task.working_agent);
             if (task.working_agent) {
                 showChatWorkingIndicator(task.working_agent);
             } else {
@@ -3341,7 +3677,31 @@
             
             await loadAndRenderComments(taskId);
             await loadAndRenderActionItems(taskId);
-            
+
+            // Check agent session liveness
+            try {
+                const agentStatus = await fetch(`${API}/api/tasks/${taskId}/agent-status`).then(r => r.json());
+                // Show Stop button if session key exists (session may be idle but still reachable)
+                const hasSession = !!agentStatus.session_key;
+                if (hasSession || agentStatus.alive) {
+                    updateAgentToggleButton(true, agentStatus.working_agent || task.agent);
+                    if (agentStatus.working_agent) {
+                        showChatWorkingIndicator(agentStatus.working_agent);
+                    }
+                } else {
+                    updateAgentToggleButton(false, null);
+                    hideChatWorkingIndicator();
+                    // Update local task data if no session at all
+                    const localTask = tasks.find(t => t.id === taskId);
+                    if (localTask) {
+                        localTask.working_agent = null;
+                        localTask.agent_session_key = null;
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to check agent status:', e);
+            }
+
             // Re-attach paste handler to ensure it works in modal context
             const chatInput = document.getElementById('chatInput');
             if (chatInput) {
@@ -3426,10 +3786,16 @@
             // Determine if section should show (has active or archived items)
             const hasItems = allActiveItems.length > 0 || archivedItems.length > 0;
             
+            section.style.display = 'block';
             if (!hasItems) {
-                section.style.display = 'none';
+                list.innerHTML = '';
+                countEl.textContent = '';
+                // Collapse when no items
+                section.classList.add('collapsed');
+                document.getElementById('actionItemsContent').classList.add('collapsed');
+                document.getElementById('actionItemsCollapseBtn').textContent = '▶';
+                actionItemsCollapsed = true;
             } else {
-                section.style.display = 'block';
                 const openCount = openItems.length;
                 countEl.textContent = openCount > 0 ? `${openCount} open` : (allActiveItems.length > 0 ? 'all done' : '');
                 
@@ -3563,6 +3929,35 @@
             if (!confirm('Delete this action item?')) return;
             await fetch(`${API}/api/action-items/${itemId}`, { method: 'DELETE' });
             const taskId = parseInt(document.getElementById('taskId').value);
+            await loadAndRenderActionItems(taskId);
+            await loadTasks();
+            renderBoard();
+        }
+
+        function toggleAddActionItem() {
+            // Expand section if collapsed
+            if (actionItemsCollapsed) {
+                toggleActionItemsCollapse();
+            }
+            const form = document.getElementById('addActionItemForm');
+            form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+            if (form.style.display === 'flex') {
+                document.getElementById('newActionItemContent').focus();
+            }
+        }
+
+        async function submitNewActionItem() {
+            const content = document.getElementById('newActionItemContent').value.trim();
+            if (!content) return;
+            const type = document.getElementById('newActionItemType').value;
+            const taskId = parseInt(document.getElementById('taskId').value);
+            await fetch(`${API}/api/tasks/${taskId}/action-items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ agent: 'user', content: content, item_type: type })
+            });
+            document.getElementById('newActionItemContent').value = '';
+            document.getElementById('addActionItemForm').style.display = 'none';
             await loadAndRenderActionItems(taskId);
             await loadTasks();
             renderBoard();
@@ -3746,6 +4141,7 @@
                 priority: document.getElementById('taskPriority').value,
                 agent: document.getElementById('taskAgent').value,
                 due_date: document.getElementById('taskDueDate').value || null,
+                project_id: parseInt(document.getElementById('taskProject').value) || 1,
             };
             
             // Show spinner
@@ -3778,7 +4174,7 @@
                 // Reset after animation
                 setTimeout(() => {
                     saveBtn.classList.remove('saved');
-                }, 1500);
+                }, 2500);
             } catch (error) {
                 saveBtn.classList.remove('saving');
                 console.error('Save failed:', error);
@@ -3786,6 +4182,56 @@
         }
         
         // Delete confirmation modal
+        async function exportTaskMarkdown() {
+            const taskId = document.getElementById('taskId').value;
+            if (!taskId) return;
+            const task = tasks.find(t => t.id == taskId);
+            if (!task) return;
+
+            const taskComments = comments[taskId] || [];
+            const taskActionItems = actionItems[taskId] || [];
+            const project = getProjectById(task.project_id);
+
+            let md = `# ${task.title}\n\n`;
+            md += `| Field | Value |\n|-------|-------|\n`;
+            md += `| Status | ${task.status} |\n`;
+            md += `| Priority | ${task.priority} |\n`;
+            md += `| Agent | ${task.agent} |\n`;
+            md += `| Project | ${project ? project.name : 'Default'} |\n`;
+            md += `| Due Date | ${task.due_date || 'None'} |\n`;
+            md += `| Created | ${task.created_at} |\n`;
+            md += `| Updated | ${task.updated_at} |\n\n`;
+
+            if (task.description) {
+                md += `## Description\n\n${task.description}\n\n`;
+            }
+
+            if (taskActionItems.length > 0) {
+                md += `## Action Items\n\n`;
+                taskActionItems.forEach(item => {
+                    const check = item.resolved ? 'x' : ' ';
+                    md += `- [${check}] **${item.item_type}** (${item.agent}): ${item.content}\n`;
+                });
+                md += '\n';
+            }
+
+            if (taskComments.length > 0) {
+                md += `## Comments\n\n`;
+                taskComments.forEach(c => {
+                    md += `### ${c.agent} — ${formatDateTime(c.created_at)}\n\n`;
+                    md += `${c.content}\n\n---\n\n`;
+                });
+            }
+
+            const slug = task.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '').slice(0, 50);
+            const a = document.createElement('a');
+            a.href = 'data:text/markdown;charset=utf-8,' + encodeURIComponent(md);
+            a.download = `task-${task.id}-${slug}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
         function confirmDeleteTask() {
             const taskId = document.getElementById('taskId').value;
             if (!taskId) return; // Can't delete unsaved task
@@ -3820,6 +4266,42 @@
         // Save from header button
         function saveTaskFromHeader() {
             document.getElementById('taskForm').requestSubmit();
+        }
+
+        let _autoSaving = false;
+        async function autoSaveTaskField() {
+            const taskId = document.getElementById('taskId').value;
+            if (!taskId || _autoSaving) return;
+            _autoSaving = true;
+            const saveBtn = document.getElementById('headerSaveBtn');
+            saveBtn.classList.add('saving');
+            saveBtn.classList.remove('saved');
+            try {
+                const data = {
+                    title: document.getElementById('taskTitleInput').value,
+                    description: document.getElementById('taskDescription').value,
+                    status: document.getElementById('taskStatus').value,
+                    priority: document.getElementById('taskPriority').value,
+                    agent: document.getElementById('taskAgent').value,
+                    due_date: document.getElementById('taskDueDate').value || null,
+                    project_id: parseInt(document.getElementById('taskProject').value) || 1,
+                };
+                await fetch(`${API}/api/tasks/${taskId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                await loadTasks();
+                renderBoard();
+                saveBtn.classList.remove('saving');
+                saveBtn.classList.add('saved');
+                setTimeout(() => saveBtn.classList.remove('saved'), 2500);
+            } catch (e) {
+                saveBtn.classList.remove('saving');
+                console.error('Auto-save failed:', e);
+            } finally {
+                _autoSaving = false;
+            }
         }
         
         async function deleteTask() {
@@ -4224,13 +4706,12 @@
             });
             
             // Trigger download
-            const blob = new Blob([md], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
+            a.href = 'data:text/markdown;charset=utf-8,' + encodeURIComponent(md);
             a.download = `chat-export-${taskId}-${Date.now()}.md`;
+            document.body.appendChild(a);
             a.click();
-            URL.revokeObjectURL(url);
+            document.body.removeChild(a);
             
             toggleExportMode();
         }
@@ -4348,12 +4829,6 @@
             document.getElementById('fileInput').value = '';
         }
         
-        // Filter change
-        document.getElementById('filterAgent').addEventListener('change', async () => {
-            await loadTasks();
-            renderBoard();
-        });
-        
         // WebSocket for live updates
         let ws = null;
         let wsConnected = false;
@@ -4371,8 +4846,8 @@
                 preview.style.opacity = '0.7';
             }
             // Also show glowing shield in expanded header (reuse thinking indicator)
-            const thinking = document.getElementById('jarvisThinking');
-            const thinkingCollapsed = document.getElementById('jarvisThinkingCollapsed');
+            const thinking = document.getElementById('agentThinking');
+            const thinkingCollapsed = document.getElementById('agentThinkingCollapsed');
             if (thinking) {
                 thinking.style.display = 'inline';
                 thinking.title = 'Reconnecting...';
@@ -4392,14 +4867,14 @@
                 preview.style.opacity = '1';
                 delete preview.dataset.originalText;
             }
-            // Hide the glowing shield (unless jarvisLoading is true)
-            const thinking = document.getElementById('jarvisThinking');
-            const thinkingCollapsed = document.getElementById('jarvisThinkingCollapsed');
-            if (thinking && !jarvisLoading) {
+            // Hide the glowing shield (unless chatLoading is true)
+            const thinking = document.getElementById('agentThinking');
+            const thinkingCollapsed = document.getElementById('agentThinkingCollapsed');
+            if (thinking && !chatLoading) {
                 thinking.style.display = 'none';
                 thinking.title = '';
             }
-            if (thinkingCollapsed && !jarvisLoading) {
+            if (thinkingCollapsed && !chatLoading) {
                 thinkingCollapsed.style.display = 'none';
                 thinkingCollapsed.title = '';
             }
@@ -4428,7 +4903,11 @@
                     await loadTasks();
                     renderBoard();
                 }
-                
+
+                if (data.type === 'project_created' || data.type === 'project_deleted') {
+                    await refreshProjects();
+                }
+
                 if (data.type === 'comment_added') {
                     const openTaskId = document.getElementById('taskId').value;
                     if (openTaskId && parseInt(openTaskId) === data.task_id) {
@@ -4476,24 +4955,41 @@
                     const openTaskId = document.getElementById('taskId').value;
                     if (openTaskId && parseInt(openTaskId) === data.task_id && data.agent) {
                         showChatWorkingIndicator(data.agent);
+                        updateAgentToggleButton(true, data.agent);
                     }
                 }
                 
                 if (data.type === 'work_stopped') {
-                    // Remove agent from tracking (supports multiple)
-                    if (data.task_id && data.agent && workingAgentsByTask[data.task_id]) {
-                        workingAgentsByTask[data.task_id].delete(data.agent);
-                        if (workingAgentsByTask[data.task_id].size === 0) {
+                    // Remove agent from tracking
+                    if (data.task_id) {
+                        if (data.agent && workingAgentsByTask[data.task_id]) {
+                            // Specific agent stopped - remove only that one
+                            workingAgentsByTask[data.task_id].delete(data.agent);
+                            if (workingAgentsByTask[data.task_id].size === 0) {
+                                delete workingAgentsByTask[data.task_id];
+                            }
+                        } else {
+                            // No agent specified or unknown - clear all working agents for this task
                             delete workingAgentsByTask[data.task_id];
                         }
                     }
                     // Refresh board to update AI working indicator on card
                     await loadTasks();
                     renderBoard();
-                    // Also remove specific agent from modal indicator if this task is open
+                    // Also remove agent from modal indicator if this task is open
                     const openTaskId = document.getElementById('taskId').value;
-                    if (openTaskId && parseInt(openTaskId) === data.task_id && data.agent) {
-                        removeChatWorkingAgent(data.agent);
+                    if (openTaskId && parseInt(openTaskId) === data.task_id) {
+                        if (data.agent) {
+                            removeChatWorkingAgent(data.agent);
+                        } else {
+                            // Clear all chat working indicators if no specific agent
+                            const chatWorkingAgents = document.getElementById('chatWorkingAgents');
+                            if (chatWorkingAgents) chatWorkingAgents.innerHTML = '';
+                            document.getElementById('chatWorkingIndicator').style.display = 'none';
+                        }
+                        // Update toggle button state
+                        const stillWorking = workingAgentsByTask[data.task_id] && workingAgentsByTask[data.task_id].size > 0;
+                        updateAgentToggleButton(stillWorking, stillWorking ? Array.from(workingAgentsByTask[data.task_id])[0] : null);
                     }
                 }
                 
@@ -4501,13 +4997,13 @@
                     // Remove deleted session from local state immediately
                     const deletedKey = data.session_key;
                     activeSessions = activeSessions.filter(s => s.key !== deletedKey);
-                    delete jarvisHistoryBySession[deletedKey];
+                    delete chatHistoryBySession[deletedKey];
                     
                     // If we're viewing the deleted session, switch to main
                     if (currentSessionKey === deletedKey) {
                         currentSessionKey = 'main';
-                        jarvisChatHistory = jarvisHistoryBySession['main'] || [];
-                        renderJarvisChat();
+                        chatHistory = chatHistoryBySession['main'] || [];
+                        renderChat();
                     }
                     
                     updateSessionSelector();
@@ -4516,8 +5012,8 @@
                 }
                 
                 if (data.type === 'command_bar_message') {
-                    // Proactive Jarvis message via WebSocket
-                    handleJarvisWebSocketMessage(data.message);
+                    // Proactive Agent message via WebSocket
+                    handleChatWebSocketMessage(data.message);
                 }
             };
             
@@ -4536,22 +5032,22 @@
             };
         }
         
-        // Command Bar - Jarvis Chat (via Backend API)
+        // Command Bar - Agent Chat (via Backend API)
         let commandBarExpanded = false;
         let commandFullsize = false;
-        let jarvisChatHistory = [];
-        let jarvisHistoryBySession = {}; // session_key -> messages[]
-        let lastJarvisMessage = 'Ask anything...';  // Updated by applyBranding()
-        let jarvisLoading = false;
+        let chatHistory = [];
+        let chatHistoryBySession = {}; // session_key -> messages[]
+        let lastChatMessage = 'Ask anything...';  // Updated by applyBranding()
+        let chatLoading = false;
         let commandAttachments = []; // {type, data, filename}
         let activeSessions = [];
         let currentSessionKey = 'main';
         
         // Load chat history from backend for a specific session
-        async function loadJarvisHistory(sessionKey = null) {
+        async function loadChatHistory(sessionKey = null) {
             const session = sessionKey || currentSessionKey;
             try {
-                const res = await fetch(`/api/jarvis/history?session=${encodeURIComponent(session)}`);
+                const res = await fetch(`/api/chat/history?session=${encodeURIComponent(session)}`);
                 if (res.ok) {
                     const data = await res.json();
                     const messages = (data.history || []).map(msg => ({
@@ -4564,16 +5060,16 @@
                     }));
                     
                     // Cache history per session
-                    jarvisHistoryBySession[session] = messages;
+                    chatHistoryBySession[session] = messages;
                     
                     // If this is the current session, update display
                     if (session === currentSessionKey) {
-                        jarvisChatHistory = messages;
-                        renderJarvisChat();
+                        chatHistory = messages;
+                        renderChat();
                         // Update preview from last assistant message
-                        const lastAssistant = [...jarvisChatHistory].reverse().find(m => m.role === 'assistant');
+                        const lastAssistant = [...chatHistory].reverse().find(m => m.role === 'assistant');
                         if (lastAssistant) {
-                            lastJarvisMessage = lastAssistant.content.length > 60 
+                            lastChatMessage = lastAssistant.content.length > 60 
                                 ? lastAssistant.content.substring(0, 60) + '...' 
                                 : lastAssistant.content;
                             updateCommandBarPreview();
@@ -4581,7 +5077,7 @@
                     }
                 }
             } catch (e) {
-                console.error('Failed to load Jarvis history:', e);
+                console.error('Failed to load Agent history:', e);
             }
         }
         
@@ -4613,7 +5109,7 @@
             
             // Fallback if no sessions (shouldn't happen)
             if (!options) {
-                options = '<option value="main">Jarvis (Main)</option>';
+                options = '<option value="main">Agent (Main)</option>';
             }
             
             selector.innerHTML = options;
@@ -4633,14 +5129,14 @@
             updateDeleteButtonVisibility();
             
             // Check if we have cached history for this session
-            if (jarvisHistoryBySession[sessionKey]) {
-                jarvisChatHistory = jarvisHistoryBySession[sessionKey];
-                renderJarvisChat();
+            if (chatHistoryBySession[sessionKey]) {
+                chatHistory = chatHistoryBySession[sessionKey];
+                renderChat();
             } else {
                 // Load from server
-                jarvisChatHistory = [];
-                renderJarvisChat();
-                await loadJarvisHistory(sessionKey);
+                chatHistory = [];
+                renderChat();
+                await loadChatHistory(sessionKey);
             }
         }
         
@@ -4687,7 +5183,7 @@
                             currentSessionKey = newKey;
                             document.getElementById('sessionSelector').value = newKey;
                             updateDeleteButtonVisibility();
-                            await loadJarvisHistory(newKey);
+                            await loadChatHistory(newKey);
                         }
                     } else {
                         showConfirmModal('? Error', 'Failed to create session: ' + (data.error || 'Unknown error'), 'OK', () => {});
@@ -4737,7 +5233,7 @@
                             btn.style.borderColor = 'var(--low)';
                             
                             // Clear cached history for this session
-                            delete jarvisHistoryBySession[currentSessionKey];
+                            delete chatHistoryBySession[currentSessionKey];
                             
                             // Switch back to first available session
                             await loadSessions();
@@ -4750,7 +5246,7 @@
                             }
                             
                             updateDeleteButtonVisibility();
-                            await loadJarvisHistory(currentSessionKey);
+                            await loadChatHistory(currentSessionKey);
                             
                             setTimeout(() => {
                                 btn.style.background = '';
@@ -4857,46 +5353,69 @@
             }
         }
         
-        // Stop agent working on a task
-        async function stopTaskAgent() {
+        // Update the agent toggle button appearance
+        function updateAgentToggleButton(isWorking, agentName) {
+            const btn = document.getElementById('stopAgentBtn');
+            if (!btn) return;
+            if (isWorking) {
+                btn.innerHTML = '■';
+                btn.title = `Stop ${agentName || 'agent'}`;
+                btn.style.background = 'rgba(239, 68, 68, 0.15)';
+                btn.style.borderColor = 'var(--critical)';
+                btn.style.color = 'var(--critical)';
+            } else {
+                btn.innerHTML = '▶';
+                btn.title = 'Start agent';
+                btn.style.background = 'rgba(34, 197, 94, 0.15)';
+                btn.style.borderColor = 'var(--low)';
+                btn.style.color = 'var(--low)';
+            }
+            btn.disabled = false;
+        }
+
+        // Toggle agent working on a task (start/stop)
+        async function toggleTaskAgent() {
             const taskId = document.getElementById('taskId').value;
             if (!taskId) return;
-            
+
             const btn = document.getElementById('stopAgentBtn');
             btn.disabled = true;
-            
+
+            const task = tasks.find(t => t.id == taskId);
+            if (!task) { btn.disabled = false; return; }
+
+            // Determine if agent is currently working (or has a live session)
+            const isWorking = !!(task.working_agent || task.agent_session_key || (workingAgentsByTask[taskId] && workingAgentsByTask[taskId].size > 0));
+
             try {
-                // Get the task's session key
-                const task = tasks.find(t => t.id == taskId);
-                if (task && task.agent_session_key) {
-                    await fetch(`/api/sessions/${encodeURIComponent(task.agent_session_key)}/stop`, {
+                if (isWorking) {
+                    // === STOP ===
+                    if (task.agent_session_key) {
+                        await fetch(`/api/sessions/${encodeURIComponent(task.agent_session_key)}/stop`, {
+                            method: 'POST'
+                        });
+                    }
+                    await fetch(`/api/tasks/${taskId}/stop-work`, { method: 'POST' });
+                    hideChatWorkingIndicator();
+                } else {
+                    // === START ===
+                    const agentName = task.agent || 'Agent';
+                    await fetch(`/api/tasks/${taskId}/start-work?agent=${encodeURIComponent(agentName)}`, {
                         method: 'POST'
                     });
                 }
-                
-                // Also stop the work indicator
-                await fetch(`/api/tasks/${taskId}/stop-work`, { method: 'POST' });
-                
-                // Hide chat working indicator
-                hideChatWorkingIndicator();
-                
-                // Visual feedback
-                btn.style.background = 'var(--low)';
-                btn.style.borderColor = 'var(--low)';
-                btn.style.color = 'white';
-                
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.style.background = '';
-                    btn.style.borderColor = '';
-                    btn.style.color = '';
-                }, 2000);
-                
+
                 // Refresh board
                 await loadTasks();
                 renderBoard();
+
+                // Update button state based on new state
+                const updatedTask = tasks.find(t => t.id == taskId);
+                if (updatedTask) {
+                    updateAgentToggleButton(!!updatedTask.working_agent, updatedTask.working_agent);
+                }
             } catch (e) {
-                console.error('Error stopping agent:', e);
+                console.error('Error toggling agent:', e);
                 btn.disabled = false;
             }
         }
@@ -4943,7 +5462,7 @@
         
         // Command bar paste handler
         function setupCommandPasteHandler() {
-            const input = document.getElementById('jarvisChatInput');
+            const input = document.getElementById('agentChatInput');
             if (input) {
                 input.addEventListener('paste', handleCommandPaste);
             }
@@ -5029,14 +5548,14 @@
             renderCommandAttachments();
         }
         
-        // Send message to Jarvis via backend
+        // Send message to Agent via backend
         let pendingMessageId = null; // Track message we're waiting on to avoid WS duplicates
         
-        async function sendJarvisMessage() {
-            const input = document.getElementById('jarvisChatInput');
+        async function sendChatMessage() {
+            const input = document.getElementById('agentChatInput');
             let message = input.value.trim();
             if (!message && commandAttachments.length === 0) return;
-            if (jarvisLoading) return;
+            if (chatLoading) return;
             
             // If replying to a message, prepend the quote
             if (commandBarReplyingTo) {
@@ -5061,15 +5580,15 @@
                 time: formatTimeNow(),
                 _optimistic: true // Mark as optimistic for later replacement
             };
-            jarvisChatHistory.push(optimisticMsg);
-            jarvisHistoryBySession[currentSessionKey] = jarvisChatHistory;
-            renderJarvisChat();
+            chatHistory.push(optimisticMsg);
+            chatHistoryBySession[currentSessionKey] = chatHistory;
+            renderChat();
             
             // Show typing indicator (both expanded and collapsed)
-            jarvisLoading = true;
-            document.getElementById('jarvisThinking').style.display = 'inline';
-            document.getElementById('jarvisThinkingCollapsed').style.display = 'inline-flex';
-            document.getElementById('jarvisSendBtn').disabled = true;
+            chatLoading = true;
+            document.getElementById('agentThinking').style.display = 'inline';
+            document.getElementById('agentThinkingCollapsed').style.display = 'inline-flex';
+            document.getElementById('agentSendBtn').disabled = true;
             
             try {
                 const payload = { 
@@ -5085,7 +5604,7 @@
                 const maxRetries = 3;
                 for (let attempt = 1; attempt <= maxRetries; attempt++) {
                     try {
-                        res = await fetch('/api/jarvis/chat', {
+                        res = await fetch('/api/chat/send', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
@@ -5094,7 +5613,7 @@
                         break; // Success, exit retry loop
                     } catch (fetchErr) {
                         if (attempt < maxRetries) {
-                            console.log(`Jarvis fetch attempt ${attempt} failed, retrying in ${attempt}s...`);
+                            console.log(`Agent fetch attempt ${attempt} failed, retrying in ${attempt}s...`);
                             await new Promise(r => setTimeout(r, attempt * 1000));
                         } else {
                             throw fetchErr; // Final attempt failed
@@ -5104,37 +5623,37 @@
                 
                 // Reload history from server to get the new messages with proper IDs
                 // This will replace the optimistic message with the real one
-                await loadJarvisHistory(currentSessionKey);
+                await loadChatHistory(currentSessionKey);
                 
                 if (data.response) {
-                    lastJarvisMessage = data.response.length > 60 
+                    lastChatMessage = data.response.length > 60 
                         ? data.response.substring(0, 60) + '...' 
                         : data.response;
                     updateCommandBarPreview();
                 } else if (data.error) {
                     // Show error inline
-                    jarvisChatHistory.push({ role: 'assistant', content: `Error: ${data.error}`, time: formatTimeNow() });
-                    renderJarvisChat();
+                    chatHistory.push({ role: 'assistant', content: `Error: ${data.error}`, time: formatTimeNow() });
+                    renderChat();
                 }
             } catch (e) {
-                console.error('Jarvis chat error:', e);
+                console.error('Agent chat error:', e);
                 // If we're reconnecting, show a gentler message
                 if (wsReconnecting || !wsConnected) {
-                    jarvisChatHistory.push({ 
+                    chatHistory.push({ 
                         role: 'assistant', 
                         content: '🔄 Connection interrupted. Your message will be sent when reconnected. Please wait...', 
                         time: formatTimeNow(),
                         _pending: true
                     });
                 } else {
-                    jarvisChatHistory.push({ role: 'assistant', content: 'Failed to reach Jarvis. Is OpenClaw running?', time: formatTimeNow() });
+                    chatHistory.push({ role: 'assistant', content: 'Failed to reach Agent. Is OpenClaw running?', time: formatTimeNow() });
                 }
-                renderJarvisChat();
+                renderChat();
             } finally {
-                jarvisLoading = false;
-                document.getElementById('jarvisThinking').style.display = 'none';
-                document.getElementById('jarvisThinkingCollapsed').style.display = 'none';
-                document.getElementById('jarvisSendBtn').disabled = false;
+                chatLoading = false;
+                document.getElementById('agentThinking').style.display = 'none';
+                document.getElementById('agentThinkingCollapsed').style.display = 'none';
+                document.getElementById('agentSendBtn').disabled = false;
             }
         }
         
@@ -5142,16 +5661,16 @@
         let commandBarReplyingTo = null;
         let commandBarExportMode = false;
         
-        function renderJarvisChat() {
-            const container = document.getElementById('jarvisChatMessages');
+        function renderChat() {
+            const container = document.getElementById('agentChatMessages');
             const b = window.BRANDING || {};
             const mainAgentName = b.mainAgentName || 'Assistant';
             const mainAgentEmoji = b.mainAgentEmoji || '🤖';
             
-            if (jarvisChatHistory.length === 0) {
+            if (chatHistory.length === 0) {
                 container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">Chat with ${mainAgentName} directly from the task board.</div>`;
             } else {
-                container.innerHTML = jarvisChatHistory.map((msg, idx) => {
+                container.innerHTML = chatHistory.map((msg, idx) => {
                     const isUser = msg.role === 'user';
                     const icon = isUser ? '👤' : mainAgentEmoji;
                     const name = isUser ? 'You' : mainAgentName;
@@ -5172,11 +5691,11 @@
                     const preview = (msg.content || '').substring(0, 80).replace(/'/g, "\\'");
                     
                     return `
-                    <div class="jarvis-message ${msg.role}" data-msg-idx="${idx}">
+                    <div class="agent-message ${msg.role}" data-msg-idx="${idx}">
                         <div class="command-export-checkbox-col">
                             <input type="checkbox" class="command-export-checkbox" data-msg-idx="${idx}">
                         </div>
-                        <div class="jarvis-message-body">
+                        <div class="agent-message-body">
                             <div class="msg-header">
                                 <span>${icon} ${name}${msg.time ? '  -  ' + msg.time : ''}</span>
                                 <span class="msg-actions" style="margin-left:auto;">
@@ -5196,9 +5715,9 @@
         function replyToCommandBarMessage(name, preview) {
             commandBarReplyingTo = { name, preview };
             
-            const inputArea = document.querySelector('.jarvis-chat-input-area');
+            const inputArea = document.querySelector('.agent-chat-input-area');
             if (!inputArea) {
-                console.warn('jarvis-chat-input-area not found');
+                console.warn('agent-chat-input-area not found');
                 return;
             }
             let replyPreview = inputArea.querySelector('.reply-preview');
@@ -5211,19 +5730,19 @@
                 <span class="reply-preview-text">↩ Replying to <strong>${name}</strong>: ${preview}</span>
                 <button class="reply-preview-close" onclick="clearCommandBarReply()">×</button>
             `;
-            document.getElementById('jarvisChatInput')?.focus();
+            document.getElementById('agentChatInput')?.focus();
         }
         
         function clearCommandBarReply() {
             commandBarReplyingTo = null;
-            const replyPreview = document.querySelector('.jarvis-chat-input-area .reply-preview');
+            const replyPreview = document.querySelector('.agent-chat-input-area .reply-preview');
             if (replyPreview) replyPreview.remove();
         }
         
         // Event delegation for command bar chat buttons (handles special chars in content)
         document.addEventListener('click', function(e) {
-            const msgEl = e.target.closest('.jarvis-message');
-            if (!msgEl || !msgEl.closest('#jarvisChatMessages')) return;
+            const msgEl = e.target.closest('.agent-message');
+            if (!msgEl || !msgEl.closest('#agentChatMessages')) return;
             
             const idx = parseInt(msgEl.dataset.msgIdx);
             
@@ -5233,7 +5752,7 @@
                 e.stopPropagation();
                 const btn = e.target.closest('.cmd-reply-btn');
                 const name = btn.dataset.name;
-                const content = jarvisChatHistory[idx]?.content || '';
+                const content = chatHistory[idx]?.content || '';
                 const preview = content.substring(0, 80);
                 replyToCommandBarMessage(name, preview + '...');
                 return;
@@ -5257,13 +5776,13 @@
         });
         
         function copyCommandBarMessage(idx) {
-            const content = jarvisChatHistory[idx]?.content || '';
+            const content = chatHistory[idx]?.content || '';
             if (!content) {
                 console.warn('No content to copy');
                 return;
             }
             
-            const btn = document.querySelector(`.jarvis-message[data-msg-idx="${idx}"] .msg-action-btn[title="Copy"]`);
+            const btn = document.querySelector(`.agent-message[data-msg-idx="${idx}"] .msg-action-btn[title="Copy"]`);
             
             // Modern clipboard API with fallback
             if (navigator.clipboard && window.isSecureContext) {
@@ -5282,20 +5801,20 @@
             if (!confirm('Delete this message? This cannot be undone.')) return;
             
             // Remove from history array
-            jarvisChatHistory.splice(idx, 1);
+            chatHistory.splice(idx, 1);
             
             // Also remove from session-specific history if exists
-            if (currentSessionKey && jarvisHistoryBySession[currentSessionKey]) {
-                jarvisHistoryBySession[currentSessionKey] = [...jarvisChatHistory];
+            if (currentSessionKey && chatHistoryBySession[currentSessionKey]) {
+                chatHistoryBySession[currentSessionKey] = [...chatHistory];
             }
             
             // Re-render the chat
-            renderJarvisChat();
+            renderChat();
         }
         
         function toggleCommandBarExportMode() {
             commandBarExportMode = !commandBarExportMode;
-            const container = document.getElementById('jarvisChatMessages');
+            const container = document.getElementById('agentChatMessages');
             
             if (commandBarExportMode) {
                 container.classList.add('export-mode');
@@ -5338,7 +5857,7 @@
             
             let md = `# Command Bar Chat Export\n\n**Exported:** ${new Date().toLocaleString()}\n\n---\n\n`;
             selected.forEach(idx => {
-                const msg = jarvisChatHistory[idx];
+                const msg = chatHistory[idx];
                 if (msg) {
                     const name = msg.role === 'user' ? 'You' : mainAgentName;
                     md += `### ${name} — ${msg.time || ''}\n\n${msg.content}\n\n---\n\n`;
@@ -5356,25 +5875,25 @@
             toggleCommandBarExportMode();
         }
         
-        // Handle incoming messages from WebSocket (for proactive Jarvis messages)
-        function handleJarvisWebSocketMessage(msg) {
+        // Handle incoming messages from WebSocket (for proactive Agent messages)
+        function handleChatWebSocketMessage(msg) {
             if (msg.content) {
                 const msgSession = msg.session_key || 'main';
                 
                 // If we're actively sending a message to this session, skip WS updates
-                // The REST response + loadJarvisHistory will handle it authoritatively
-                if (jarvisLoading && msgSession === currentSessionKey) {
+                // The REST response + loadChatHistory will handle it authoritatively
+                if (chatLoading && msgSession === currentSessionKey) {
                     console.log('Skipping WS message during active send:', msg.id);
                     return;
                 }
                 
                 // Initialize session history if needed
-                if (!jarvisHistoryBySession[msgSession]) {
-                    jarvisHistoryBySession[msgSession] = [];
+                if (!chatHistoryBySession[msgSession]) {
+                    chatHistoryBySession[msgSession] = [];
                 }
                 
                 // Check for duplicates by ID or content (also check optimistic messages)
-                const sessionHistory = jarvisHistoryBySession[msgSession];
+                const sessionHistory = chatHistoryBySession[msgSession];
                 const isDupe = sessionHistory.some(h => 
                     (msg.id && h.id === msg.id) || 
                     (h._optimistic && h.role === msg.role && h.content === msg.content) ||
@@ -5392,16 +5911,16 @@
                     };
                     
                     // Add to session-specific history
-                    jarvisHistoryBySession[msgSession].push(newMsg);
+                    chatHistoryBySession[msgSession].push(newMsg);
                     
                     // If this is the current session, update display
                     if (msgSession === currentSessionKey) {
-                        jarvisChatHistory.push(newMsg);
+                        chatHistory.push(newMsg);
                         if (msg.role === 'assistant') {
-                            lastJarvisMessage = msg.content.length > 60 ? msg.content.substring(0, 60) + '...' : msg.content;
+                            lastChatMessage = msg.content.length > 60 ? msg.content.substring(0, 60) + '...' : msg.content;
                             updateCommandBarPreview();
                         }
-                        renderJarvisChat();
+                        renderChat();
                     }
                 }
             }
@@ -5417,18 +5936,18 @@
             // Ensure paste handler is attached
             setupCommandPasteHandler();
             
-            document.getElementById('jarvisChatInput').focus();
+            document.getElementById('agentChatInput').focus();
             
             // Load sessions and history
             await loadSessions();
             updateDeleteButtonVisibility(); // Enable/disable edit/delete buttons based on current session
             
-            if (!jarvisHistoryBySession[currentSessionKey] || jarvisHistoryBySession[currentSessionKey].length === 0) {
-                await loadJarvisHistory(currentSessionKey);
+            if (!chatHistoryBySession[currentSessionKey] || chatHistoryBySession[currentSessionKey].length === 0) {
+                await loadChatHistory(currentSessionKey);
             } else {
-                jarvisChatHistory = jarvisHistoryBySession[currentSessionKey];
+                chatHistory = chatHistoryBySession[currentSessionKey];
             }
-            renderJarvisChat();
+            renderChat();
         }
         
         function collapseCommandBar() {
@@ -5463,7 +5982,7 @@
         }
         
         function updateCommandBarPreview() {
-            document.getElementById('commandBarPreview').textContent = lastJarvisMessage;
+            document.getElementById('commandBarPreview').textContent = lastChatMessage;
         }
         
         // Escape key closes command bar
@@ -5506,12 +6025,11 @@
                 <section class="help-section">
                     <h3>🤖 Agents</h3>
                     <div class="agent-list">
-                        <div class="agent-item">${mainEmoji} <strong>${mainAgent}</strong> — Main coordinator, handles command bar chat</div>
-                        <div class="agent-item">🏛️ <strong>Architect</strong> — System design, patterns, scalability</div>
-                        <div class="agent-item">🔒 <strong>Security Auditor</strong> — SOC2, HIPAA, CIS compliance</div>
-                        <div class="agent-item">📋 <strong>Code Reviewer</strong> — Code quality, best practices</div>
-                        <div class="agent-item">🎨 <strong>UX Manager</strong> — User flows, UI consistency</div>
-                        <div class="agent-item">👤 <strong>User</strong> — Human supervisor (you!)</div>
+                        ${config.agentMeta ? config.agents.map(a => {
+                            const meta = config.agentMeta[a];
+                            if (!meta) return '';
+                            return `<div class="agent-item">${meta.icon} <strong>${a}</strong> — ${meta.description}</div>`;
+                        }).join('') : `<div class="agent-item">${mainEmoji} <strong>${mainAgent}</strong> — Main coordinator</div>`}
                     </div>
                 </section>
                 
@@ -5619,13 +6137,8 @@
             document.getElementById('helpModal').classList.remove('active');
         }
         
-        // Mention/Tag Agents (main agent added dynamically from config)
-        window.AGENT_ICONS_MAP = {
-            'Architect': '🏛️',
-            'Security Auditor': '🔒',
-            'Code Reviewer': '📋',
-            'UX Manager': '🎨'
-        };
+        // AGENT_ICONS_MAP is populated from config.agentMeta in applyBranding()
+        if (!window.AGENT_ICONS_MAP) window.AGENT_ICONS_MAP = {};
         
         function toggleMentionDropdown(event) {
             event.stopPropagation();
@@ -5670,6 +6183,52 @@
             }
         });
         
+        // Project Manager functions
+        function openProjectManager() {
+            document.getElementById('projectManagerModal').classList.add('active');
+            renderProjectList();
+        }
+        function closeProjectManager() {
+            document.getElementById('projectManagerModal').classList.remove('active');
+        }
+        function renderProjectList() {
+            const list = document.getElementById('pmProjectList');
+            const projects = config.projects || [];
+            list.innerHTML = projects.map(p => `
+                <div class="pm-project-item">
+                    <div class="pm-color-dot" style="background:${p.color || '#6366f1'}"></div>
+                    <span class="pm-project-name">${escapeHtml(p.name)}</span>
+                    <button class="pm-delete-btn" ${p.id === 1 ? 'disabled title="Cannot delete default project"' : `onclick="deleteProject(${p.id}, '${escapeHtml(p.name)}')"`}>&times;</button>
+                </div>
+            `).join('');
+        }
+        async function addProject() {
+            const name = document.getElementById('pmNewName').value.trim();
+            if (!name) return;
+            const color = document.getElementById('pmNewColor').value;
+            const description = document.getElementById('pmNewDesc').value.trim();
+            await fetch(`${API}/api/projects`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, color, description })
+            });
+            document.getElementById('pmNewName').value = '';
+            document.getElementById('pmNewDesc').value = '';
+            await refreshProjects();
+        }
+        async function deleteProject(id, name) {
+            if (!confirm(`Delete project "${name}"? Tasks will NOT be deleted.`)) return;
+            await fetch(`${API}/api/projects/${id}`, { method: 'DELETE' });
+            await refreshProjects();
+        }
+        async function refreshProjects() {
+            const cfg = await fetch(`${API}/api/config`).then(r => r.json());
+            config.projects = cfg.projects;
+            populateProjectSwitcher();
+            renderProjectList();
+            renderBoard();
+        }
+
         // Start
         init();
         connectWebSocket();

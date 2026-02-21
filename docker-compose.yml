@@ -1,7 +1,7 @@
 ﻿services:
   taskboard:
     build: .
-    container_name: moltdev-taskboard
+    container_name: openclaw-taskboard
     restart: unless-stopped
     ports:
       - "8080:8080"

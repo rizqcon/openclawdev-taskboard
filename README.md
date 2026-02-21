@@ -16,6 +16,32 @@ https://github.com/user-attachments/assets/fc4237c9-c4e5-437d-8638-1a51e8eb6219
 
 ## 📋 Changelog
 
+### v2.0.0 (2026-02-14) — Major Refactor
+
+#### ✨ New Features
+- **Multi-Project Support** — Create, switch between, and manage multiple projects with colored badges
+- **Project Manager Modal** — Add/remove projects with custom name, color, and description
+- **"Todo" Status Column** — New column between Backlog and In Progress (6 columns total)
+- **Advanced Filter Bar** — Combine Priority, Agent, and keyword search filters (client-side AND logic)
+- **Markdown Export** — Export task details, action items, and comments as downloadable `.md` file
+- **Configurable Agent Detection** — `AGENTS` env var for manual config, `AGENT_AUTO_DETECT` toggle
+- **Responsive Design** — CSS media queries for tablet (768px) and mobile (480px)
+- **Dockerized & CORS-Configurable** — `TASKBOARD_BASE_URL` for proxy/domain deployments, IP restriction middleware
+- **Status Validation** — Backend rejects invalid statuses/priorities with HTTP 422
+- **Auto-Save Task Fields** — Status, priority, agent, project, due date auto-save on change
+- **Inline Action Item Creation** — "+ Add" button with type picker directly in task modal
+
+#### 🏗️ Backend Refactor
+- Refactored monolithic `app.py` (2600 lines) into modular `app/` package
+- New structure: `config.py`, `database.py`, `models.py`, `websocket.py`, `openclaw.py`, `routes/`
+- Agent session hardening: double-spawn guard, liveness checks, configurable auto-stop on Done
+
+#### 🔧 Improvements
+- Dockerfile updated to use `app/` package with `uvicorn app.main:app`
+- Task form now includes Project dropdown
+- Agent icons and colors auto-assigned from OpenClaw API
+- Session deletion via WebSocket RPC (removed legacy filesystem manipulation)
+
 ### v1.6.0 (2026-02-03)
 
 #### ✨ New Features
@@ -52,18 +78,24 @@ https://github.com/user-attachments/assets/fc4237c9-c4e5-437d-8638-1a51e8eb6219
 - Fixed thinking indicator not clearing when agent finishes work
 - Fixed duplicate agent spawns when moving cards already being worked on
 
+See [CHANGELOG.md](CHANGELOG.md) for full version history.
+
 ---
 
 ## ✨ Features
 
 ### 🎯 Core Functionality
-- **Live Kanban Board** — Real-time updates via WebSocket
+- **Live Kanban Board** — Real-time updates via WebSocket (6 columns)
 - **Multi-Agent Support** — Assign tasks to different AI agents
+- **Multi-Project Support** — Organize tasks across multiple projects with color-coded badges
 - **Auto-Spawn Sessions** — Agents automatically activate when tasks move to "In Progress"
 - **Persistent Conversations** — Back-and-forth chat with agents on each task
 - **Session Isolation** — Each agent maintains separate context per task
 
-### 🤖 AI Agents (Configurable via .env)
+### 🤖 AI Agents (Auto-Detected or Configurable)
+
+Agents are auto-detected from your OpenClaw instance at startup. Built-in defaults:
+
 | Icon | Agent | Focus |
 |------|-------|-------|
 | 🤖 | Main Agent | Coordinator, command bar chat (name configurable) |
@@ -72,18 +104,27 @@ https://github.com/user-attachments/assets/fc4237c9-c4e5-437d-8638-1a51e8eb6219
 | 📋 | Code Reviewer | Code quality, best practices |
 | 🎨 | UX Manager | User flows, UI consistency |
 
+Custom agents get auto-assigned icons and colors. Override via `AGENTS` env var.
+
+### 📊 Filtering & Organization
+- **Project Switcher** — Filter by project; "All Projects" shows colored badges on cards
+- **Filter Bar** — Combine priority, agent, and keyword search (client-side AND logic)
+- **Markdown Export** — Export any task as `.md` with metadata, action items, and comments
+
 ### 💬 Communication
 - **Command Bar** — Direct chat with your main agent from the header
 - **@Mentions** — Tag agents into any task conversation
-- **Action Items** — Questions, blockers, and completion tracking
+- **Action Items** — Questions, blockers, and completion tracking with notification bubbles
 - **File Attachments** — Paste images or attach documents
 
 ### 🔒 Security
 - API key authentication for sensitive endpoints
-- Secrets stored in environment variables
-- CORS restricted to localhost
-- Input validation and size limits
-- Agent guardrails (filesystem boundaries, forbidden actions)
+- IP-based access restriction (localhost + configurable via `ALLOWED_IPS`)
+- CORS restricted to `TASKBOARD_BASE_URL` and localhost variants
+- Input validation, size limits, and Pydantic field validators
+- Agent guardrails (filesystem boundaries, forbidden actions, escalation chain)
+
+---
 
 ## 🚀 Quick Start
 
@@ -126,9 +167,9 @@ The easiest way to set up the task board is to **ask your OpenClaw agent to do i
 Once the task board is running, prompt your OpenClaw agent:
 
 ```
-I have the task board running at http://localhost:8080. 
-Please onboard it as a channel plugin so you can receive 
-messages from the command bar and spawn sub-agents when 
+I have the task board running at http://<your-url/ip>:8080.
+Please onboard it as a channel plugin so you can receive
+messages from the command bar and spawn sub-agents when
 tasks move to "In Progress".
 ```
 
@@ -142,8 +183,8 @@ Your agent will:
 To set up the multi-agent dev team, prompt your agent:
 
 ```
-I want to set up the dev team sub-agents (Architect, Security Auditor, 
-Code Reviewer, UX Manager). Please configure them in OpenClaw so they 
+I want to set up the dev team sub-agents (Architect, Security Auditor,
+Code Reviewer, UX Manager). Please configure them in OpenClaw so they
 can be spawned from the task board.
 ```
 
@@ -251,6 +292,16 @@ Copy `.env.example` to `.env` and customize:
 | `OPENCLAW_GATEWAY_URL` | OpenClaw gateway URL | For AI features |
 | `OPENCLAW_TOKEN` | OpenClaw API token | For AI features |
 | `TASKBOARD_API_KEY` | API key for protected endpoints | Recommended |
+| `TASKBOARD_BASE_URL` | Public URL for CORS and agent prompts | No (default: `http://localhost:8080`) |
+
+#### Agent Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AGENT_AUTO_DETECT` | Auto-detect agents from OpenClaw API at startup | `true` |
+| `AGENTS` | Manual agent list (overrides auto-detect). Format: `agent_id:Name,...` | — |
+| `AUTO_STOP_ON_DONE` | Auto-kill agent sessions when task moves to Done. When enabled, sessions are **permanently deleted** (not archived). Set to `false` to keep sessions alive — use OpenClaw's `agents.defaults.subagents.archiveAfterMinutes` for graceful archival instead. | `true` |
+| `ALLOWED_IPS` | Allow access from specific IPs (comma-separated) | localhost only |
 
 #### Project Configuration
 
@@ -291,16 +342,17 @@ The task board will auto-spawn agent sessions when tasks move to "In Progress".
 ## 📋 Workflow
 
 ```
-Backlog → In Progress → Review → Done
-              ↓
-           Blocked
+Backlog → Todo → In Progress → Review → Done
+                      ↓
+                   Blocked
 ```
 
-1. **Backlog** — Tasks waiting to be started
-2. **In Progress** — Agent session auto-spawns, work begins
-3. **Review** — Agent completed work, awaiting approval
-4. **Done** — Human approval required (cannot be set by agents)
-5. **Blocked** — Waiting on external input
+1. **Backlog** — Tasks waiting to be triaged
+2. **Todo** — Triaged, ready to be picked up
+3. **In Progress** — Agent session auto-spawns, work begins
+4. **Review** — Agent completed work, awaiting approval
+5. **Done** — Approved and complete (agent session killed if `AUTO_STOP_ON_DONE=true`)
+6. **Blocked** — Waiting on external input
 
 ---
 
@@ -364,18 +416,40 @@ Action items track **what needs attention** with notification bubbles on cards:
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Task Board UI                         │
-│       WebSocket ←→ FastAPI Backend ←→ SQLite            │
-└─────────────────────────┬───────────────────────────────┘
-                          │ /tools/invoke
-┌─────────────────────────┴───────────────────────────────┐
-│                   OpenClaw Gateway                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐              │
-│  │  Main    │  │ Architect│  │ Security │  ...         │
-│  │  Agent   │  │          │  │ Auditor  │              │
-│  └──────────┘  └──────────┘  └──────────┘              │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                      Task Board UI                           │
+│              (static/index.html — SPA)                       │
+│                         │                                    │
+│              WebSocket  │  REST API                          │
+└─────────────────────────┼───────────────────────────────────┘
+                          │
+┌─────────────────────────┼───────────────────────────────────┐
+│                   FastAPI Backend                             │
+│                                                              │
+│  app/main.py ─── Middleware (IP restriction, request logging)│
+│       │                                                      │
+│       ├── routes/tasks.py         CRUD, move, start/stop     │
+│       ├── routes/sessions.py      OpenClaw session mgmt      │
+│       ├── routes/comments.py      Comments + @mention spawn  │
+│       ├── routes/projects.py      Project CRUD               │
+│       ├── routes/chat.py          Command bar ↔ main agent   │
+│       ├── routes/action_items.py  Questions, blockers         │
+│       └── routes/uploads.py       File attachments           │
+│       │                                                      │
+│       ├── config.py       Env vars, agent metadata           │
+│       ├── database.py     SQLite + WAL + write lock          │
+│       ├── models.py       Pydantic models + validators       │
+│       ├── openclaw.py     WS-RPC, spawn, guardrails          │
+│       └── websocket.py    Broadcast manager                  │
+└─────────────────────────┬───────────────────────────────────┘
+                          │ /tools/invoke + WS-RPC
+┌─────────────────────────┴───────────────────────────────────┐
+│                   OpenClaw Gateway                            │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
+│  │  Main    │  │ Architect│  │ Security │  ...              │
+│  │  Agent   │  │          │  │ Auditor  │                   │
+│  └──────────┘  └──────────┘  └──────────┘                   │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -384,25 +458,45 @@ Action items track **what needs attention** with notification bubbles on cards:
 
 ### Tasks
 - `GET /api/tasks` — List all tasks
-- `POST /api/tasks` — Create task
+- `POST /api/tasks` — Create task (with `project_id`)
 - `PATCH /api/tasks/{id}` — Update task
 - `DELETE /api/tasks/{id}` — Delete task
 - `POST /api/tasks/{id}/move` — Move task to status
+- `POST /api/tasks/{id}/start-work` — Set working agent
+- `POST /api/tasks/{id}/stop-work` — Clear working agent
+- `GET /api/tasks/{id}/agent-status` — Check session liveness
+
+### Projects
+- `GET /api/projects` — List all projects
+- `POST /api/projects` — Create project
+- `DELETE /api/projects/{id}` — Delete project (reassigns tasks to Default)
 
 ### Comments
 - `GET /api/tasks/{id}/comments` — Get comments
-- `POST /api/tasks/{id}/comments` — Add comment
+- `POST /api/tasks/{id}/comments` — Add comment (triggers @mention spawn)
+- `DELETE /api/tasks/{id}/comments/{comment_id}` — Delete comment
 
 ### Action Items
-- `GET /api/tasks/{id}/action-items` — Get action items
+- `GET /api/tasks/{id}/action-items` — Get action items (`?archived=true`)
 - `POST /api/tasks/{id}/action-items` — Create action item
 - `POST /api/action-items/{id}/resolve` — Resolve item
+- `POST /api/action-items/{id}/archive` — Archive resolved item
+- `POST /api/action-items/{id}/unarchive` — Unarchive item
+
+### Sessions
+- `GET /api/sessions` — List active OpenClaw sessions
+- `POST /api/sessions/create` — Spawn new session
+- `POST /api/sessions/{key}/stop` — Stop session
+- `DELETE /api/sessions/{key}` — Delete session (via WS-RPC)
+- `POST /api/sessions/stop-all` — Emergency stop all non-main sessions
 
 ### Command Bar
+- `GET /api/jarvis/history` — Chat history (`?session_key=...`)
 - `POST /api/jarvis/chat` — Send message to main agent
 - `POST /api/jarvis/respond` — Push response to command bar
 
-### WebSocket
+### Config & WebSocket
+- `GET /api/config` — Board config (agents, projects, statuses, branding)
 - `WS /ws` — Real-time updates
 
 ---
@@ -411,28 +505,19 @@ Action items track **what needs attention** with notification bubbles on cards:
 
 ### Adding New Agents
 
-Edit `app.py`:
+Agents are auto-detected from OpenClaw at startup. To configure manually, set in `.env`:
 
-```python
-AGENT_TO_OPENCLAW_ID = {
-    "Your Agent": "your-agent-id",
-    ...
-}
+```env
+# Format: agent_id:Display Name (comma-separated)
+AGENTS=main:Jarvis,architect:Architect,my-agent:My Custom Agent
 
-AGENT_SYSTEM_PROMPTS = {
-    "your-agent-id": "Your agent's system prompt...",
-    ...
-}
+# Optional: disable auto-detection
+AGENT_AUTO_DETECT=false
 ```
 
-Update `static/index.html` for agent icon:
+Agent icons and colors are assigned automatically. Built-in agents (`main`, `architect`, `security-auditor`, `code-reviewer`, `ux-manager`) have predefined icons and colors. Custom agents get auto-assigned colors.
 
-```javascript
-const AGENT_ICONS = {
-    'Your Agent': '🚀',
-    ...
-};
-```
+See [OPENCLAW_SETUP.md](OPENCLAW_SETUP.md) for full agent configuration details.
 
 ---
 
